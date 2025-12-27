@@ -9,7 +9,6 @@ sequenceDiagram
 
     %% Form submit triggers event handler
     Browser->>Browser: Submit event handler runs
-    Note right of Browser: Calls event.preventDefault() which prevents page reload
 
     %% JS creates new note object and updates UI immediately
     Browser->>Browser: Create note object and push to local notes array then rerender note list in DOM
