@@ -1,2 +1,2 @@
 # fullstackopen
-mysSubmissions
+mySubmissions
