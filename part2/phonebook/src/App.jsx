@@ -63,7 +63,7 @@ const App = () => {
       />
       <h3>add a new</h3>
       <PersonForm
-        onSubmit={addContact}
+        addContact={addContact}
         newName={newName}
         handleAddName={handleAddName}
         newNumber={newNumber}
@@ -72,7 +72,6 @@ const App = () => {
       <h3>Numbers</h3>
       <Persons
         personsToShow={personsToShow}
-        persons={persons}
       />
     </div>
   )
