@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import PersonForm from './components/PersonForm'
+import Filter from './components/Filter'
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -55,12 +56,11 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>filter shown with
-        <input
-          value={searchTerm}
-          onChange={handleSearchChange}
-        />
-      </div>
+      <Filter
+        searchTerm={searchTerm}
+        handleSearchChange={handleSearchChange}
+      />
+      <h3>add a new</h3>
       <PersonForm
         onSubmit={addContact}
         newName={newName}
