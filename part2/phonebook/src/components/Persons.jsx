@@ -1,8 +1,17 @@
-const Persons = ({personsToShow}) => {
+const Persons = ({personsToShow, handleDelete}) => {
   return (
     <div>
-      {personsToShow.map(person => 
-        <p key={person.id}>{person.name} {person.number}</p>
+      {personsToShow.map(person => {
+        console.log('rendering person',   person)
+        return (
+          <p key={person.id}>
+            {person.name} {person.number}
+            <button onClick={()=> handleDelete(person.id, person.name)}>
+              delete
+            </button>
+          </p>
+        )
+      }
       )}
     </div>
   )

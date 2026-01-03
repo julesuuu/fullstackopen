@@ -2,24 +2,21 @@ import { useState, useEffect } from 'react'
 import PersonForm from './components/PersonForm'
 import Filter from './components/Filter'
 import Persons from './components/Persons'
-import axios from 'axios'
+import personServices from './services/persons'
 
 const App = () => {
   const [persons, setPersons] = useState([])
-
-  useEffect(() => {
-    console.log('effect')
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        console.log('promise fulfilled')
-        setPersons(response.data)
-      })
-  }, [])
-
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
+
+  useEffect(() => {
+  personServices
+    .getAll()
+    .then(initialPersons => {
+      setPersons(initialPersons)
+    })
+  }, [])
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value)
@@ -27,7 +24,7 @@ const App = () => {
   }
 
   const personsToShow = persons.filter(person => 
-    person.name.toLowerCase().includes(searchTerm.toLowerCase())
+    person.name.toLowerCase().includes(searchTerm.trim().toLowerCase())
   )
 
   const addContact = (event) => {
@@ -42,12 +39,16 @@ const App = () => {
 
     const nameOject = {
       name: newName,
-      id: newName,
       number: newNumber
     }
-    setPersons(persons.concat(nameOject))
-    setNewName('')
-    setNewNumber('')
+
+    personServices
+      .create(nameOject)
+      .then((returnedName) => {
+        setPersons(persons.concat(returnedName))
+        setNewName('')
+        setNewNumber('')
+      })
   }
 
   const handleAddName = (event) => {
@@ -58,6 +59,22 @@ const App = () => {
   const handleAddNumber = (event) => {
     console.log(event.target.value)
     setNewNumber(event.target.value)
+  }
+
+  const handleDelete = (id, person) => {
+    console.log('deleting', id , 'typeOf', typeof id)
+    if (window.confirm(`Delete ${person}`)) {
+      personServices
+        .deleteName(id)
+        .then(() => {
+          setPersons(persons.filter(p => p.id !== id))
+        })
+        .catch(error => {
+          alert(`The person  '${person}' was already removed from the server`)
+          setPersons(persons.filter(p => p.id !== id))
+          console.log(error)
+        })
+    }
   }
 
   return (
@@ -78,6 +95,7 @@ const App = () => {
       <h3>Numbers</h3>
       <Persons
         personsToShow={personsToShow}
+        handleDelete={handleDelete}
       />
     </div>
   )
