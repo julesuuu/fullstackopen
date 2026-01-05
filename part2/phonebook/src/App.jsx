@@ -10,7 +10,14 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
-  const [message, setMessage] = useState('')
+  const [info, setInfo] = useState({message: null, type: null})
+
+  const notify = (message, type = 'success') => {
+    setInfo({ message, type })
+    setTimeout(() => {
+      setInfo({ message: null, type: null })
+    },3000)
+  }
 
   useEffect(() => {
   personServices
@@ -47,12 +54,13 @@ const App = () => {
             setNewNumber('')
             console.log('done')
 
-            setMessage(`Number for '${returnedPerson.name}' is changed successfully!`)
+            notify(`Number for '${returnedPerson.name}' is changed successfully!`, 'success')
           })
           .catch(error => {
-            alert(`The person '${existingPerson.name}' was already deleted from the server`)
-            setPersons(persons.filter(person => person.id !== existingPerson.id))
             console.log(error)
+            
+            notify(`Information of '${existingPerson.name}' was already removed from the server`, 'error')
+            setPersons(persons.filter(person => person.id !== existingPerson.id))
           })
       }
       return
@@ -69,11 +77,8 @@ const App = () => {
         setPersons(persons.concat(returnedPerson))
         setNewName('')
         setNewNumber('')
-
-        setMessage(`Added '${returnedPerson.name}' successfully!`)
-        setTimeout(() => {
-          setMessage(null)
-        },3000)
+        
+        notify(`Added '${returnedPerson.name}' successfully!`, 'success')
       })
   }
 
@@ -94,11 +99,13 @@ const App = () => {
         .deleteName(id)
         .then(() => {
           setPersons(persons.filter(p => p.id !== id))
+          notify(`Deleted '${person}' successfully!`)
+
         })
         .catch(error => {
-          alert(`The person  '${person}' was already removed from the server`)
-          setPersons(persons.filter(p => p.id !== id))
           console.log(error)
+          notify(`Information of '${person}' was already removed from the server`, 'error')
+          setPersons(persons.filter(p => p.id !== id))
         })
     }
   }
@@ -106,7 +113,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={message} />
+      <Notification info={info} />
       <Filter
         searchTerm={searchTerm}
         handleSearchChange={handleSearchChange}
