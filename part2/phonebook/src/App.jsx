@@ -3,12 +3,14 @@ import PersonForm from './components/PersonForm'
 import Filter from './components/Filter'
 import Persons from './components/Persons'
 import personServices from './services/persons'
+import Notification from './components/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
+  const [message, setMessage] = useState('')
 
   useEffect(() => {
   personServices
@@ -44,6 +46,8 @@ const App = () => {
             setNewName('')
             setNewNumber('')
             console.log('done')
+
+            setMessage(`Number for '${returnedPerson.name}' is changed successfully!`)
           })
           .catch(error => {
             alert(`The person '${existingPerson.name}' was already deleted from the server`)
@@ -65,6 +69,11 @@ const App = () => {
         setPersons(persons.concat(returnedPerson))
         setNewName('')
         setNewNumber('')
+
+        setMessage(`Added '${returnedPerson.name}' successfully!`)
+        setTimeout(() => {
+          setMessage(null)
+        },3000)
       })
   }
 
@@ -97,6 +106,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} />
       <Filter
         searchTerm={searchTerm}
         handleSearchChange={handleSearchChange}
