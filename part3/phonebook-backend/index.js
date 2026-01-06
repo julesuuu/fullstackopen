@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const morgan = requier("morgan");
+const morgan = require("morgan");
 app.use(morgan("tiny"));
 
 const date = new Date();
@@ -28,16 +28,14 @@ let persons = [
   },
 ];
 
-const requestLogger = (request, response, next) => {
-  console.log("Method:", request.method);
-  console.log("Path:  ", request.path);
-  console.log("Body:  ", request.body);
-  console.log("---");
-  next();
-};
+morgan.token("body", (req, res) => {
+  return JSON.stringify(req.body);
+});
 
 app.use(express.json());
-app.use(requestLogger);
+app.use(
+  morgan(":method :url :status :res[content-length] - :response-time ms :body")
+);
 
 app.get("/info", (req, res) => {
   res.send(
@@ -80,7 +78,7 @@ const generateId = () => {
 app.post("/api/persons", (req, res) => {
   const { name, number } = req.body;
   const nameExists = persons.some((person) => person.name === name);
-
+  /*
   if (!name) {
     return res.status(400).json({
       error: "name is missing",
@@ -96,7 +94,7 @@ app.post("/api/persons", (req, res) => {
       error: "name must be unique",
     });
   }
-
+*/
   const person = {
     id: generateId(),
     name: name,
