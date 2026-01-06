@@ -33,6 +33,7 @@ morgan.token("body", (req, res) => {
 });
 
 app.use(express.json());
+
 app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms :body")
 );
@@ -78,7 +79,7 @@ const generateId = () => {
 app.post("/api/persons", (req, res) => {
   const { name, number } = req.body;
   const nameExists = persons.some((person) => person.name === name);
-  /*
+
   if (!name) {
     return res.status(400).json({
       error: "name is missing",
@@ -94,7 +95,7 @@ app.post("/api/persons", (req, res) => {
       error: "name must be unique",
     });
   }
-*/
+
   const person = {
     id: generateId(),
     name: name,
