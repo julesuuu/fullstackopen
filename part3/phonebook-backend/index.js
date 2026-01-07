@@ -2,6 +2,8 @@ const express = require("express");
 const app = express();
 const morgan = require("morgan");
 app.use(morgan("tiny"));
+const cors = require("cors");
+app.use(cors());
 
 const date = new Date();
 
