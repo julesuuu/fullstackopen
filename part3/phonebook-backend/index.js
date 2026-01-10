@@ -19,16 +19,15 @@ app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms :body")
 );
 
-const date = new Date();
 app.get("/info", (req, res) => {
-  res.send(
-    `
-    <div
-      <p>Phonebook has info for ${persons.length} people</p>
-      <p>${date}</p>
-    </div>
-    `
-  );
+  Person.countDocuments({}).then((count) => {
+    res.send(`
+      <div
+        <p>Phonebook has info for ${count} people</p>
+    <p>${new Date()}</p>
+  </div>
+    `);
+  });
 });
 
 app.get("/api/persons", (req, res) => {
@@ -53,20 +52,17 @@ app.get("/api/persons/:id", (req, res) => {
 });
 
 app.delete("/api/persons/:id", (req, res) => {
-  const id = req.params.id;
-  persons = persons.filter((person) => person.id !== id);
-
-  res.status(204).end();
+  Person.findByIdAndDelete(req.params.id)
+    .then(() => {
+      res.status(204).end();
+    })
+    .catch((error) => {
+      res.status(400).send({ error: "malformed id" });
+    });
 });
-
-const generateId = () => {
-  const maxId = 1000000;
-  return Math.floor(Math.random() * maxId);
-};
 
 app.post("/api/persons", (req, res) => {
   const { name, number } = req.body;
-  const nameExists = persons.some((person) => person.name === name);
 
   if (!name) {
     return res.status(400).json({
@@ -84,14 +80,14 @@ app.post("/api/persons", (req, res) => {
     });
   }
 
-  const person = {
-    id: generateId(),
+  const person = new Person({
     name: name,
     number: number,
-  };
+  });
 
-  persons = persons.concat(person);
-  res.json(person);
+  person.save().then((savedPerson) => {
+    res.json(savedPerson);
+  });
 });
 
 const PORT = process.env.PORT;
