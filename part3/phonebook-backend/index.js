@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const morgan = require("morgan");
@@ -5,8 +6,8 @@ app.use(morgan("tiny"));
 const cors = require("cors");
 app.use(cors());
 app.use(express.static("dist"));
-
-const date = new Date();
+const mongoose = require("mongoose");
+const Person = require("./models/person");
 
 let persons = [
   {
@@ -41,6 +42,7 @@ app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms :body")
 );
 
+const date = new Date();
 app.get("/info", (req, res) => {
   res.send(
     `
@@ -53,18 +55,24 @@ app.get("/info", (req, res) => {
 });
 
 app.get("/api/persons", (req, res) => {
-  res.json(persons);
+  Person.find({}).then((persons) => {
+    res.json(persons);
+  });
 });
 
 app.get("/api/persons/:id", (req, res) => {
-  const id = req.params.id;
-  const person = persons.find((person) => person.id === id);
-
-  if (person) {
-    res.json(person);
-  } else {
-    res.status(404).end();
-  }
+  Person.findById(req.params.id)
+    .then((person) => {
+      if (person) {
+        res.json(person);
+      } else {
+        res.status(404).end();
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      res.status(400).send({ error: "malformatted id" });
+    });
 });
 
 app.delete("/api/persons/:id", (req, res) => {
@@ -109,7 +117,7 @@ app.post("/api/persons", (req, res) => {
   res.json(person);
 });
 
-const PORT = 3001;
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server Running on ${PORT}`);
 });
