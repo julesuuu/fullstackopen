@@ -62,15 +62,14 @@ app.delete("/api/persons/:id", (req, res) => {
 });
 
 app.post("/api/persons", (req, res) => {
-  const { name, number } = req.body;
-
+  const body = req.body;
   /*
-  if (!name) {
+  if (!body.name) {
     return res.status(400).json({
       error: "name is missing",
     });
   }
-  if (!number) {
+  if (!body.number) {
     return res.status(400).json({
       error: "number is missing",
     });
@@ -82,8 +81,8 @@ app.post("/api/persons", (req, res) => {
   } */
 
   const person = new Person({
-    name: name,
-    number: number,
+    name: body.name,
+    number: body.number,
   });
 
   person.save().then((savedPerson) => {
