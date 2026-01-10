@@ -64,6 +64,7 @@ app.delete("/api/persons/:id", (req, res) => {
 app.post("/api/persons", (req, res) => {
   const { name, number } = req.body;
 
+  /*
   if (!name) {
     return res.status(400).json({
       error: "name is missing",
@@ -78,7 +79,7 @@ app.post("/api/persons", (req, res) => {
     return res.status(400).json({
       error: "name must be unique",
     });
-  }
+  } */
 
   const person = new Person({
     name: name,
