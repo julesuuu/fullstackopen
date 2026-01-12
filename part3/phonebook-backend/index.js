@@ -47,7 +47,7 @@ app.get("/api/persons", (req, res) => {
   });
 });
 
-app.get("/api/persons/:id", (req, res, next) => {
+app.get("/api/persons/:id", (req, res) => {
   Person.findById(req.params.id)
     .then((person) => {
       if (person) {
@@ -56,15 +56,20 @@ app.get("/api/persons/:id", (req, res, next) => {
         res.status(404).end();
       }
     })
-    .catch((error) => next(error));
+    .catch((error) => {
+      console.log(error);
+      res.status(400).send({ error: "malformatted id" });
+    });
 });
 
-app.delete("/api/persons/:id", (req, res, next) => {
+app.delete("/api/persons/:id", (req, res) => {
   Person.findByIdAndDelete(req.params.id)
     .then(() => {
       res.status(204).end();
     })
-    .catch((error) => next(error));
+    .catch((error) => {
+      res.status(400).send({ error: "malformed id" });
+    });
 });
 
 app.post("/api/persons", (req, res, next) => {
@@ -75,35 +80,12 @@ app.post("/api/persons", (req, res, next) => {
   }
 
   const person = new Person({
-    name: name,
-    number: number,
+    name: body.name,
+    number: body.number,
   });
 
-  person
-    .save()
-    .then((savedPerson) => {
-      res.json(savedPerson);
-    })
-    .catch((error) => next(error));
-});
-
-app.put("/api/persons/:id", (req, res, next) => {
-  const { name, number } = req.body;
-
-  Person.findById(req.params.id).then((person) => {
-    if (!person) {
-      return res.status(404).end();
-    }
-
-    person.name = name;
-    person.number = number;
-
-    return person
-      .save()
-      .then((updatedPerson) => {
-        res.json(updatedPerson);
-      })
-      .catch((error) => next(error));
+  person.save().then((savedPerson) => {
+    res.json(savedPerson);
   });
 });
 
