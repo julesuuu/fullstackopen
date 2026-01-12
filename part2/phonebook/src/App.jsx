@@ -81,7 +81,6 @@ const App = () => {
         notify(`Added '${returnedPerson.name}' successfully!`, 'success')
       })
       .catch(error => {
-        console.log("🚀 ~ addContact ~ error.response.data.error:", error.response.data.error)
         const message = error.response.data.error
         notify(message, 'error')
       })
