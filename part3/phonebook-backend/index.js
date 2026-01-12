@@ -19,6 +19,17 @@ app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms :body")
 );
 
+const errorHandler = (error, req, res, next) => {
+  console.error(error.message);
+
+  if (error.name === "CastError") {
+    return res.status(400).send({ error: "malformatted id" });
+  } else if (error.name === "ValidationError") {
+    return res.status(400).json({ error: error.message });
+  }
+  next(error);
+};
+
 app.get("/info", (req, res) => {
   Person.countDocuments({}).then((count) => {
     res.send(`
@@ -58,23 +69,10 @@ app.delete("/api/persons/:id", (req, res, next) => {
 
 app.post("/api/persons", (req, res, next) => {
   const { name, number } = req.body;
-  /*
-  if (!name) {
-    return res.status(400).json({
-      error: "name is missing",
-    });
+
+  if (!name || !number) {
+    return res.status(400).json({ error: "content missing" });
   }
-  if (!number) {
-    return res.status(400).json({
-      error: "number is missing",
-    });
-  }
-  
-  if (nameExists) {
-    return res.status(400).json({
-      error: "name must be unique",
-    });
-  } */
 
   const person = new Person({
     name: name,
@@ -108,15 +106,6 @@ app.put("/api/persons/:id", (req, res, next) => {
       .catch((error) => next(error));
   });
 });
-
-const errorHandler = (error, req, res, next) => {
-  console.error(error.message);
-
-  if (error.name === "CastError") {
-    return res.status(400).send({ error: "malformatted id" });
-  }
-  next(error);
-};
 
 app.use(errorHandler);
 
