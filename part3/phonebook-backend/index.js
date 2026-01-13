@@ -6,7 +6,6 @@ app.use(morgan("tiny"));
 const cors = require("cors");
 app.use(cors());
 app.use(express.static("dist"));
-const mongoose = require("mongoose");
 const Person = require("./models/person");
 
 morgan.token("body", (req, res) => {
