@@ -81,8 +81,8 @@ const App = () => {
         notify(`Added '${returnedPerson.name}' successfully!`, 'success')
       })
       .catch(error => {
-        const message = error.response.data.error
-        notify(message, 'error')
+        console.log(error.response.data.error)
+        notify(error.response.data.error, 'error')
       })
   }
 
