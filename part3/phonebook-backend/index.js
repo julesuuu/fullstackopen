@@ -81,20 +81,16 @@ app.post("/api/persons", (req, res, next) => {
     .catch((error) => next(error));
 });
 
-app.put("/api/persons/:id", (req, res, next) => {
-  const { name, number } = req.body;
+app.put("/api/persons/:id", (request, response, next) => {
+  const { name, number } = request.body;
 
-  Person.findById(req.params.id)
-    .then((person) => {
-      if (!person) {
-        return res.status(404).end();
-      }
-      person.name = name;
-      person.number = number;
-
-      return person.save().then((updatedPerson) => {
-        res.json(updatedPerson);
-      });
+  Person.findByIdAndUpdate(
+    request.params.id,
+    { name, number },
+    { new: true, runValidators: true, context: "query" }
+  )
+    .then((updatedPerson) => {
+      response.json(updatedPerson);
     })
     .catch((error) => next(error));
 });
