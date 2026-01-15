@@ -100,3 +100,29 @@ describe('favorite blog', () => {
     })
   })
 })
+
+describe('most blogs', () => {
+  test('is the author with the most entries', () => {
+    const result = listHelper.mostBlogs(blogs)
+    assert.deepStrictEqual(result, {
+      author: 'Robert C. Martin',
+      blogs: 3
+    })
+  })
+  test('of empty list is null', () => {
+    assert.strictEqual(listHelper.mostBlogs([]), null)
+  })
+})
+
+describe('most likes', () => {
+  test('is the author with the most likes', () => {
+    const result = listHelper.mostLikes(blogs)
+    assert.deepStrictEqual(result, {
+      author: "Edsger W. Dijkstra",
+      likes: 17
+    })
+  })
+  test('of empty list is null', () => {
+    assert.strictEqual(listHelper.mostBlogs([]), null)
+  })
+})
