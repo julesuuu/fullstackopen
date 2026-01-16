@@ -1,0 +1,9 @@
+PUT http://localhost:3003/api/blogs/6966381feeea6fc50de11f52
+Content-Type: application/json
+
+{
+  "title": "Metamorphosis",
+  "author": "Jules",
+  "url": "nh.net",
+  "likes": 177013
+}

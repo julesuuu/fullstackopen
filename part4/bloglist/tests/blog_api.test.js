@@ -147,6 +147,29 @@ test('blog without title or url is not added', async () => {
   assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
 })
 
+test('a blog can be updated', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+  const blogToUpdate = blogsAtStart[0]
+
+  const updatedBlogData = { 
+    ...blogToUpdate, 
+    likes: blogToUpdate.likes + 1 
+  }
+  console.log('🚀 ~ :158 ~ updatedBlogData:', updatedBlogData)
+
+  await api
+    .put(`/api/blogs/${blogToUpdate.id}`)
+    .send(updatedBlogData)
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  const updatedBlog = blogsAtEnd.find(b => b.id === blogToUpdate.id)
+  console.log('🚀 ~ :167 ~ updatedBlog:', updatedBlog)
+
+  assert.strictEqual(updatedBlog.likes, blogToUpdate.likes + 1)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
