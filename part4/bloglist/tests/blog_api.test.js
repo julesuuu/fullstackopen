@@ -114,6 +114,21 @@ test('blogs have id property instead of _id', async () => {
   assert.strictEqual(blogToCheck._id, undefined)
 })
 
+test('if the likes property is missing it will default to 0', async () => {
+  const newBlog = { 
+    title: 'Testing default likes',
+    author: 'Jules',
+    url: 'http://example.com'
+  }
+
+  const response = await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+  
+  assert.strictEqual(response.body.likes, 0)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
