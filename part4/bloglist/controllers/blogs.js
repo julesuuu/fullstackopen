@@ -1,6 +1,5 @@
 const blogsRouter = require("express").Router()
 const { update } = require('lodash')
-const { response } = require('../app')
 const Blog = require("../models/blog")
 
 blogsRouter.get('/', async (request, response) => {
