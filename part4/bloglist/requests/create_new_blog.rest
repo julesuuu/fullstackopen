@@ -2,8 +2,9 @@ POST http://localhost:3003/api/blogs/
 Content-Type: application/json
 
 {
-  "title": "Metamorphosis",
-  "author": "theOne",
-  "url": "nh.net",
-  "likes": 177013
+  "title": "Max",
+  "author": "NoOne",
+  "url": "http://sample.url.com",
+  "likes": 5,
+  "user": "696b927bb2b3a5a805c54e16"
 }
