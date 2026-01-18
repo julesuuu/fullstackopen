@@ -1,11 +1,10 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imp1bGVzdTY5IiwiaWQiOiI2OTZjZGRmOTNmYWZmMzVlYTUzY2IyYWQiLCJpYXQiOjE3Njg3NDM2MjgsImV4cCI6MTc2ODc0NzIyOH0.j1hMs5LwS1zHfZxwprtDMdEhj2H3GpB4teQTNfPPOOA
+Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imp1bGVzdTY5IiwiaWQiOiI2OTZjZGRmOTNmYWZmMzVlYTUzY2IyYWQiLCJpYXQiOjE3Njg3NDU0MTYsImV4cCI6MTc2ODc0OTAxNn0.yTiC8pICevgsm8cLRWGXlABY-2VQ4_SUNh5rFjKqOLE
 
 {
   "title": "A Will Eternal",
-  "author": "Er gen",
+  "author": "Er Gen",
   "url": "https://www.wuxiaworld.com/novel/a-will-eternal",
-  "likes": 222,
-  "user": "696cddf93faff35ea53cb2ad"
+  "likes": 222
 }
