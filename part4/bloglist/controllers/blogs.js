@@ -50,6 +50,7 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
 
 blogsRouter.delete('/:id', async (request, response) => {
   const user = request.user
+
   if (!user) {
     return response.status(401).json({ error: 'token missing or invalid' })
   }
