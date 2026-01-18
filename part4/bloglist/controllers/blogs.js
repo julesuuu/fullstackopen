@@ -50,28 +50,19 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
   console.log('🚀 ~ :31 ~ savedBlog:', savedBlog)
 })
 
-blogsRouter.delete('/:id', userExtractor, async (request, response) => {
+blogsRouter.delete('/:id', async (request, response) => {
   const user = request.user
-
   if (!user) {
-    return response.status(401).json({error: 'token missing or not valid'})
+    return response.status(401).json({ error: 'token missing or invalid' })
   }
 
   const blog = await Blog.findById(request.params.id)
-
   if (!blog) {
-    return response.status(404).json({error: 'blog not found'})
+    return response.status(404).json({ error: 'blog not found' })
   }
 
-  /*
-  if (blog.user.toString() !== decodedToken.id.toString()) {
-    return response.status(401).json({ 
-      error: 'only the creator can delete this blog' 
-    })
-  } */
-
-  if (!blog.user.equals(decodedToken.id)) {
-    return response.status(401).json({error: 'unauthorized'})
+  if (!blog.user || blog.user.toString() !== user.id.toString()) {
+    return response.status(401).json({ error: 'unauthorized' })
   }
 
   await Blog.findByIdAndDelete(request.params.id)

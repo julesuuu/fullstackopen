@@ -1,5 +1,5 @@
 const assert = require('node:assert')
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcryptjs')
 const { test, after, beforeEach, describe } = require('node:test')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
@@ -10,16 +10,26 @@ const User = require('../models/user')
 
 const api = supertest(app)
 
+let token
+
 beforeEach(async () => {
   await Blog.deleteMany({})
   await User.deleteMany({})
 
-  await Blog.insertMany(helper.initialBlogs)
-
   const passwordHash = await bcrypt.hash('sekret', 10)
-  const user = new User({ username: 'root', passwordHash })
+  const user = new User({ username: 'root', name: 'Superuser', passwordHash })
+  const savedUser = await user.save()
 
-  await user.save()
+  const loginResponse = await api
+    .post('/api/login')
+    .send({ username: 'root', password: 'sekret' })
+  token = loginResponse.body.token
+
+  const blogsWithUser = helper.initialBlogs.map(blog => ({
+    ...blog,
+    user: savedUser._id
+  }))
+  await Blog.insertMany(blogsWithUser)
 })
 
 test('creation succeeds with a fresh username', async () => {
@@ -85,7 +95,9 @@ describe('viewing a specific blog', () => {
       .expect(200)
       .expect('Content-Type', /application\/json/)
     
-    assert.deepStrictEqual(resultBlog.body, blogToView)
+    const expectedBlog = JSON.parse(JSON.stringify(blogToView))
+    
+    assert.deepStrictEqual(resultBlog.body, expectedBlog)
   })
 })
 
@@ -100,6 +112,7 @@ describe('addition of a new blog', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -134,6 +147,7 @@ describe('addition of a new blog', () => {
 
     const response = await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
       .expect(201)
     
@@ -149,6 +163,7 @@ describe('deletion of a blog', () => {
 
     await api
       .delete(`/api/blogs/${blogToDelete.id}`)
+      .set('Authorization', `Bearer ${token}`)
       .expect(204)
     
     const blogsAtEnd = await helper.blogsInDb()
@@ -167,7 +182,7 @@ describe('updating a blog', () => {
     const blogToUpdate = blogsAtStart[0]
 
     const updatedBlogData = { 
-      ...blogToUpdate, 
+      ...blogToUpdate,
       likes: blogToUpdate.likes + 1 
     }
 
