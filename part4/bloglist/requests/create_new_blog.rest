@@ -1,6 +1,6 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imp1bGVzdTY5IiwiaWQiOiI2OTZjZGRmOTNmYWZmMzVlYTUzY2IyYWQiLCJpYXQiOjE3Njg3NDU0MTYsImV4cCI6MTc2ODc0OTAxNn0.yTiC8pICevgsm8cLRWGXlABY-2VQ4_SUNh5rFjKqOLE
+Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjY5NmNmNDM4MzRhZDk5OGY5MjliMTkxYSIsImlhdCI6MTc2ODc0OTMwMSwiZXhwIjoxNzY4NzUyOTAxfQ.KaetgH16QsYYuR51golerI_Fbc-AUwv7KRMYFXIaiic
 
 {
   "title": "A Will Eternal",

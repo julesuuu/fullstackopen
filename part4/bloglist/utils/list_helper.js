@@ -1,13 +1,13 @@
 const _ = require('lodash')
 
-const dummy = (blogs) => {
+const dummy = () => {
   return 1
 }
 
 const totalLikes = (blogs) => {
   return blogs.reduce((sum, blog) => {
     return sum + blog.likes
-  }, 0) 
+  }, 0)
 }
 
 const favoriteBlog = (blogs) => {
@@ -16,7 +16,7 @@ const favoriteBlog = (blogs) => {
   const favorite = blogs.reduce((prev, current) => {
     return (prev.likes > current.likes) ? prev : current
   })
-  console.log("🚀 ~ favoriteBlog ~ favorite:", favorite)
+  console.log('🚀 ~ favoriteBlog ~ favorite:', favorite)
 
   return {
     title: favorite.title,
@@ -25,38 +25,38 @@ const favoriteBlog = (blogs) => {
   }
 }
 
-  const mostBlogs = (blogs) => {
-    if (blogs.length === 0) return null
+const mostBlogs = (blogs) => {
+  if (blogs.length === 0) return null
 
-    const authorCounts = _.countBy(blogs, 'author')
-    console.log("🚀 ~ mostBlogs ~ authorCounts:", authorCounts)
+  const authorCounts = _.countBy(blogs, 'author')
+  console.log('🚀 ~ mostBlogs ~ authorCounts:', authorCounts)
 
-    const authorArray = _.map(authorCounts, (count, author) => ({
+  const authorArray = _.map(authorCounts, (count, author) => ({
+    author: author,
+    blogs: count
+  }))
+  console.log('🚀 ~ mostBlogs ~ authorArray:', authorArray)
+
+  return _.maxBy(authorArray, 'blogs')
+}
+
+const mostLikes = (blogs) => {
+  if (blogs.length === 0) return
+
+  const groupedAuthors = _.groupBy(blogs, 'author')
+  console.log('🚀 ~ mostLikes ~ groupedAuthors:', groupedAuthors)
+
+  const authorLikesArray = _.map(groupedAuthors, (authorBlogs, author) => {
+    return {
       author: author,
-      blogs: count
-    }))
-    console.log("🚀 ~ mostBlogs ~ authorArray:", authorArray)
+      likes: _.sumBy(authorBlogs, 'likes')
+    }
+  })
+  console.log('🚀 ~ mostLikes ~ authorLikesArray:', authorLikesArray)
 
-    return _.maxBy(authorArray, 'blogs')
-  }
+  return _.maxBy(authorLikesArray, 'likes')
+}
 
-  const mostLikes = (blogs) => {
-    if (blogs.length === 0) return
-
-    const groupedAuthors = _.groupBy(blogs, 'author')
-    console.log("🚀 ~ mostLikes ~ groupedAuthors:", groupedAuthors)
-
-    const authorLikesArray = _.map(groupedAuthors, (authorBlogs, author) => {
-      return {
-        author: author,
-        likes: _.sumBy(authorBlogs, 'likes')
-      }
-    })
-    console.log("🚀 ~ mostLikes ~ authorLikesArray:", authorLikesArray)
-
-    return _.maxBy(authorLikesArray, 'likes')
-  }
-  
 
 module.exports = {
   dummy,

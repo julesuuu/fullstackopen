@@ -6,7 +6,8 @@
   "scripts": {
     "start": "cross-env NODE_ENV=production node index.js",
     "dev": "cross-env NODE_ENV=development node --watch",
-    "test": "NODE_ENV=test node --test --test-concurrency=1 tests/blog_api.test.js"
+    "test": "NODE_ENV=test node --test --test-concurrency=1 tests/blog_api.test.js",
+    "lint": "eslint ."
   },
   "author": "Julesu",
   "license": "MIT",
@@ -21,6 +22,11 @@
     "mongoose": "^9.1.3"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "@stylistic/eslint-plugin": "^5.7.0",
+    "@stylistic/eslint-plugin-js": "^4.4.1",
+    "eslint": "^9.39.2",
+    "globals": "^17.0.0",
     "nodemon": "^3.1.11",
     "supertest": "^7.2.2"
   }

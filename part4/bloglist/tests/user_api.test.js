@@ -27,7 +27,7 @@ describe('when there is initially one in db', () => {
       .send(newUser)
       .expect(400)
       .expect('Content-Type', /application\/json/)
-    
+
     assert.strictEqual(result.body.error, 'password must be atleast 3 characters long')
   })
 
@@ -59,7 +59,7 @@ describe('when there is initially one in db', () => {
       .post('/api/users')
       .send(invalidUser)
       .expect(400)
-    
+
     const usersAtEnd = await helper.usersInDb()
 
     assert.strictEqual(usersAtStart.length, usersAtEnd.length)

@@ -34,19 +34,19 @@ beforeEach(async () => {
 
 test('creation succeeds with a fresh username', async () => {
   const usersAtStart = await helper.usersInDb()
-  
+
   const newUser = {
     username: 'Jules',
     name: 'Julius Ramos',
     password: 'julsdpogi'
   }
 
-  await api 
+  await api
     .post('/api/users')
     .send(newUser)
     .expect(201)
     .expect('Content-Type', /application\/json/)
-  
+
   const usersAtEnd = await helper.usersInDb()
   assert.strictEqual(usersAtEnd.length, usersAtStart.length + 1)
 
@@ -55,7 +55,7 @@ test('creation succeeds with a fresh username', async () => {
 })
 
 describe('when there is initially some blogs saved', () => {
-  
+
   test('blogs are returned as json', async () => {
     await api
       .get('/api/blogs')
@@ -94,9 +94,9 @@ describe('viewing a specific blog', () => {
       .get(`/api/blogs/${blogToView.id}`)
       .expect(200)
       .expect('Content-Type', /application\/json/)
-    
+
     const expectedBlog = JSON.parse(JSON.stringify(blogToView))
-    
+
     assert.deepStrictEqual(resultBlog.body, expectedBlog)
   })
 })
@@ -104,9 +104,9 @@ describe('viewing a specific blog', () => {
 describe('addition of a new blog', () => {
   test('succeeds with valid data', async () => {
     const newBlog = {
-      title: "Hello, World",
-      author: "Jules",
-      url: "http://example.com",
+      title: 'Hello, World',
+      author: 'Jules',
+      url: 'http://example.com',
       likes: 69
     }
 
@@ -116,7 +116,7 @@ describe('addition of a new blog', () => {
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
-    
+
     const blogsAtEnd = await helper.blogsInDb()
     assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1)
 
@@ -127,7 +127,7 @@ describe('addition of a new blog', () => {
 
   test('fails with status code 400 if data invalid', async () => {
     const blogWithoutTitle = { author: 'Jules', url: 'http://test.com' }
-    
+
     await api
       .post('/api/blogs')
       .send(blogWithoutTitle)
@@ -139,7 +139,7 @@ describe('addition of a new blog', () => {
   })
 
   test('if the likes property is missing it will default to 0', async () => {
-    const newBlog = { 
+    const newBlog = {
       title: 'Testing default likes',
       author: 'Jules',
       url: 'http://example.com'
@@ -150,7 +150,7 @@ describe('addition of a new blog', () => {
       .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
       .expect(201)
-    
+
     assert.strictEqual(response.body.likes, 0)
   })
 })
@@ -165,12 +165,12 @@ describe('deletion of a blog', () => {
       .delete(`/api/blogs/${blogToDelete.id}`)
       .set('Authorization', `Bearer ${token}`)
       .expect(204)
-    
+
     const blogsAtEnd = await helper.blogsInDb()
     console.log('🚀 ~ :124 ~ blogsAtEnd:', blogsAtEnd)
     const ids = blogsAtEnd.map(n => n.id)
     console.log('🚀 ~ :125 ~ ids:', ids)
-    
+
     assert(!ids.includes(blogToDelete.id))
     assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
   })
@@ -181,9 +181,9 @@ describe('updating a blog', () => {
     const blogsAtStart = await helper.blogsInDb()
     const blogToUpdate = blogsAtStart[0]
 
-    const updatedBlogData = { 
+    const updatedBlogData = {
       ...blogToUpdate,
-      likes: blogToUpdate.likes + 1 
+      likes: blogToUpdate.likes + 1
     }
 
     await api
