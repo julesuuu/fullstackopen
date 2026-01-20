@@ -1,6 +1,8 @@
-/* eslint-disable no-undef */
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import Notification from './components/Notification.jsx'
+import LoginForm from './components/LoginForm.jsx'
+import BlogForm from './components/BlogForm.jsx'
 import blogService from './services/blogs'
 import loginService from './services/login.js'
 
@@ -12,6 +14,8 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const [notification, setNotification] = useState(null)
+  const [notificationType, setNotificationType] = useState('success')
   
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -28,8 +32,16 @@ const App = () => {
     }
   }, [])
 
+  const notify = (message, type = 'success') => {
+    setNotification(message)
+    setNotificationType(type)
+    setTimeout(() => {
+      setNotification(null)
+    }, 5000);
+  }
+
   const handleLogin = async event => {
-    event.preventDefault()
+    event.preventDefault()  
 
     try {
       const user = await loginService.login({ username, password })
@@ -44,10 +56,7 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch {
-      setErrorMessage('wrong credentials')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+      notify('wrong username or password', 'error')
     }
   }
 
@@ -68,94 +77,50 @@ const App = () => {
       const returnedBlog = await blogService.create(blogObject)
 
       setBlogs([...blogs, returnedBlog])
+      notify(`a new blog ${returnedBlog.title} by ${returnedBlog.author}`)
 
       setTitle('')
       setAuthor('')
       setUrl('')
-      
+
     } catch (exception) {
       console.log('Error creating blog', exception)
     }
   }
 
-  const loginForm = () => {
-    return (
-      <form onSubmit={handleLogin}>
-        <div>
-          <label>
-            username
-            <input
-              type="text"
-              value={username}
-              onChange={({target}) => setUsername(target.value)}
-            />
-          </label>
-        </div>
-        <div>
-          <label>
-            password
-            <input
-              type="password"
-              value={password}
-              onChange={({target}) => setPassword(target.value)}
-            />
-          </label>
-          <button type='submit'>login</button>
-        </div>
-      </form>
-    )
-  }
-
   if (user === null) {
-    return (
-      <div>
-        <h2>Log in to application</h2>
-        {loginForm()}
-      </div>
-    )
-  }
-
   return (
     <div>
+      <h2>Log in to application</h2>
+      <Notification message={notification} type={notificationType} />
+      
+      <LoginForm
+        username={username}
+        password={password}
+        handleUsernameChange={({ target }) => setUsername(target.value)}
+        handlePasswordChange={({ target }) => setPassword(target.value)}
+        handleSubmit={handleLogin}
+      />
+    </div>
+  )
+}
+  return (
+    <div>
+      <h2>{user === null ? 'Login to application' : 'blogs'}</h2>
+      <Notification message={notification} type={notificationType} />
       <p>
-        {user.name} logged in
+        {user.name} logged in 
         <button onClick={handleLogout}>logout</button>
       </p>
-      <h2>create new</h2>
-      <form onSubmit={handleCreateBlog}>
-        <div>
-          <label>
-            title: 
-            <input
-              type="text"
-              value={title}
-              onChange={({ target }) => setTitle(target.value)}
-            />
-          </label>
-        </div>
-        <div>
-          <label>
-            author: 
-            <input
-              type="text"
-              value={author}
-              onChange={({ target }) => setAuthor(target.value)}
-            />
-          </label>
-        </div>
-        <div>
-          <label>
-            url: 
-            <input
-              type="text"
-              value={url}
-              onChange={({ target }) => setUrl(target.value)}
-            />
-          </label>
-        </div>
-        <button type='submit'>create</button>
-      </form>
-      <h2>blogs</h2>
+      <BlogForm
+        onSubmit={handleCreateBlog}
+        title={title}
+        author={author}
+        url={url}
+        handleTitleChange={({ target }) => setTitle(target.value)}
+        handleAuthorChange={({ target }) => setAuthor(target.value)}
+        handleUrlChange={({ target }) => setUrl(target.value)}
+      />
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
