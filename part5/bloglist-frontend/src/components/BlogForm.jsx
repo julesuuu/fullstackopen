@@ -7,17 +7,17 @@ const BlogForm = ({ createBlog }) => {
 
   const addBlog = (event) => {
     event.preventDefault()
+    
+    createBlog({
+      title: title,
+      author: author,
+      url: url
+    })
+
+    setTitle('')
+    setAuthor('')
+    setUrl('')
   }
-
-  createBlog({
-    title: title,
-    author: author,
-    url: url
-  })
-
-  setTitle('')
-  setAuthor('')
-  setUrl('')
 
   return (
     <div>
@@ -34,14 +34,14 @@ const BlogForm = ({ createBlog }) => {
           author:
           <input
             value={author}
-            onChange={({ target }) => setTitle(target.value)}
+            onChange={({ target }) => setAuthor(target.value)} // Fixed: setAuthor
           />
         </div>
         <div>
           url:
           <input
             value={url}
-            onChange={({ target }) => setTitle(target.value)}
+            onChange={({ target }) => setUrl(target.value)} // Fixed: setUrl
           />
         </div>
         <button type="submit">create</button>
