@@ -3,6 +3,7 @@ import Blog from './components/Blog'
 import Notification from './components/Notification.jsx'
 import LoginForm from './components/LoginForm.jsx'
 import BlogForm from './components/BlogForm.jsx'
+import Togglable from './components/Togglable.jsx'
 import blogService from './services/blogs'
 import loginService from './services/login.js'
 
@@ -112,6 +113,7 @@ const App = () => {
         {user.name} logged in 
         <button onClick={handleLogout}>logout</button>
       </p>
+      <Togglable buttonLabel='create new blog' >
       <BlogForm
         onSubmit={handleCreateBlog}
         title={title}
@@ -120,7 +122,8 @@ const App = () => {
         handleTitleChange={({ target }) => setTitle(target.value)}
         handleAuthorChange={({ target }) => setAuthor(target.value)}
         handleUrlChange={({ target }) => setUrl(target.value)}
-      />
+        />
+        </Togglable>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
