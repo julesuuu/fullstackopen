@@ -89,6 +89,20 @@ const App = () => {
     }
   }
 
+  const handleDelete = async (blog) => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
+      try {
+        await blogService.remove(blog.id)
+
+        setBlogs(blogs.filter(b => b.id !== blog.id))
+
+        notify(`Deleted ${blog.title}`)
+      } catch (exception) {
+        notify('Error could not delete the blog', 'error', exception)
+      }
+    }
+  }
+
   const handleLike = async (blog) => {
     const blogToUpdate = {
       ...blog,
@@ -144,6 +158,8 @@ const App = () => {
           key={blog.id}
           blog={blog}
           handleLike={() => handleLike(blog)}
+          handleDelete={() => handleDelete(blog)}
+          user={user}
         />
       )}
     </div>
