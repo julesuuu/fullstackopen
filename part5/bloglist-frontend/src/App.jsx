@@ -16,11 +16,11 @@ const App = () => {
   const [notificationType, setNotificationType] = useState('success')
 
   const blogFormRef = useRef( )
-  
+
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
 
   useEffect(() => {
@@ -37,11 +37,11 @@ const App = () => {
     setNotificationType(type)
     setTimeout(() => {
       setNotification(null)
-    }, 5000);
+    }, 5000)
   }
 
   const handleLogin = async event => {
-    event.preventDefault()  
+    event.preventDefault()
 
     try {
       const user = await loginService.login({ username, password })
@@ -124,30 +124,30 @@ const App = () => {
   }
 
   if (user === null) {
-  return (
-    <div>
-      <h2>Log in to application</h2>
-      <Notification message={notification} type={notificationType} />
-      
-      <LoginForm
-        username={username}
-        password={password}
-        handleUsernameChange={({ target }) => setUsername(target.value)}
-        handlePasswordChange={({ target }) => setPassword(target.value)}
-        handleSubmit={handleLogin}
-      />
-    </div>
-  )
+    return (
+      <div>
+        <h2>Log in to application</h2>
+        <Notification message={notification} type={notificationType} />
+
+        <LoginForm
+          username={username}
+          password={password}
+          handleUsernameChange={({ target }) => setUsername(target.value)}
+          handlePasswordChange={({ target }) => setPassword(target.value)}
+          handleSubmit={handleLogin}
+        />
+      </div>
+    )
   }
-  
+
   const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes)
 
-  return (  
+  return (
     <div>
       <h2>{user === null ? 'Login to application' : 'blogs'}</h2>
       <Notification message={notification} type={notificationType} />
       <p>
-        {user.name} logged in 
+        {user.name} logged in
         <button onClick={handleLogout}>logout</button>
       </p>
       <Togglable buttonLabel='create new blog' ref={blogFormRef} >
