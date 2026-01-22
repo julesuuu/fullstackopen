@@ -70,13 +70,42 @@ const App = () => {
     try {
       const returnedBlog = await blogService.create(blogObject)
 
+      const blogToDisplay = {
+        ...returnedBlog,
+        user: {
+          name: user.name,
+          username: user.username,
+          id: returnedBlog.user
+        }
+      }
+
       blogFormRef.current.toggleVisibility()
 
-      setBlogs([...blogs, returnedBlog])
+      setBlogs([...blogs, blogToDisplay])
       notify(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`)
 
     } catch (exception) {
       console.log('Error creating blog', exception)
+    }
+  }
+
+  const handleLike = async (blog) => {
+    const blogToUpdate = {
+      ...blog,
+      likes: blog.likes + 1,
+      user: blog.user.id
+    }
+
+    try {
+      const returnedBlog = await blogService.update(blog.id, blogToUpdate)
+
+      const blogWithUser = {
+        ...returnedBlog,
+        user: blog.user
+      }
+      setBlogs(blogs.map(b => (b.id !== blog.id ? b : blogWithUser)))
+    } catch (exception) {
+      notify('something went wrong', 'error', exception)
     }
   }
 
@@ -96,7 +125,7 @@ const App = () => {
     </div>
   )
 }
-  return (
+  return (  
     <div>
       <h2>{user === null ? 'Login to application' : 'blogs'}</h2>
       <Notification message={notification} type={notificationType} />
@@ -105,10 +134,14 @@ const App = () => {
         <button onClick={handleLogout}>logout</button>
       </p>
       <Togglable buttonLabel='create new blog' ref={blogFormRef} >
-      <BlogForm createBlog={handleCreateBlog}/>
-        </Togglable>
+        <BlogForm createBlog={handleCreateBlog}/>
+      </Togglable>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog
+          key={blog.id}
+          blog={blog}
+          handleLike={() => handleLike(blog)}
+        />
       )}
     </div>
   )
