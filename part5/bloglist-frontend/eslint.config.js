@@ -10,8 +10,9 @@ export default [
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
+      ...globals.vitest,
+      vi: 'readonly',
       parserOptions: {
-        ...globals.vitest,
         ecmaVersion: 'latest',
         ecmaFeatures: { jsx: true },
         sourceType: 'module'

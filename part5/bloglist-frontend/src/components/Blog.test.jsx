@@ -1,7 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Blog from './Blog'
-import { test, expect } from 'vitest'
 
 test('renders title and author', () => {
   const blog = {
@@ -25,7 +24,7 @@ test('renders title and author', () => {
   const url = screen.queryByText('https://fullstackopen.com/')
   expect(url).toBeNull()
 
-  screen.debug(author)
+  screen.debug()
 })
 
 test('clicking the view button displays url and likes', async () => {
@@ -53,5 +52,33 @@ test('clicking the view button displays url and likes', async () => {
   expect(url).toBeDefined()
   expect(likes).toBeDefined()
 
-  screen.debug(button)
+  screen.debug()
+})
+
+test('clicking the like button twice', async () => {
+  const blog = {
+    title: 'Component testing is done with react-testing-library',
+    author: 'Arto Hellas',
+    url: 'https://fullstackopen.com/',
+    likes: 10,
+    user: {
+      username: 'jules',
+      name: 'Jules'
+    }
+  }
+
+  const mockHandler = vi.fn()
+
+  render(<Blog blog={blog} handleLike={mockHandler} />)
+
+  const user = userEvent.setup()
+
+  const viewButton = screen.getByText('view')
+  await user.click(viewButton)
+
+  const likeButton = screen.getByText('like')
+  await user.click(likeButton)
+  await user.click(likeButton)
+
+  expect(mockHandler.mock.calls).toHaveLength(2)
 })
