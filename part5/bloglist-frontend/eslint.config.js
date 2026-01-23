@@ -11,6 +11,7 @@ export default [
       ecmaVersion: 2020,
       globals: globals.browser,
       parserOptions: {
+        ...globals.vitest,
         ecmaVersion: 'latest',
         ecmaFeatures: { jsx: true },
         sourceType: 'module'

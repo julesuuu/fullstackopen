@@ -15,7 +15,7 @@ const Blog = ({ blog, handleLike, handleDelete, user }) => {
     setVisible(!visible)
   }
 
-  const showRemoveButton = blog.user.username === user.username
+  const showRemoveButton = blog.user.username === user?.username
 
   return (
     <div style={blogStyle}>
