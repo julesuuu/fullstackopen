@@ -27,9 +27,15 @@ describe('Blog app', () => {
       await page.getByRole('button', { name: 'login' }).click()
     })
 
-    test('a new blog can be create', async ({ page }) => {
+    test('a new blog can be created', async ({ page }) => {
       await page.getByRole('button', { name: 'create new blog' }).click()
-      
+
+      await page.getByLabel('title').fill('a blog created by playwright')
+      await page.getByLabel('author').fill('Superuser')
+      await page.getByLabel('url').fill('example.com')
+      await page.getByRole('button', { name: 'create' }).click()
+
+      await expect(page.getByText('a blog created by playwright').first()).toBeVisible()
     })
   })
 })
