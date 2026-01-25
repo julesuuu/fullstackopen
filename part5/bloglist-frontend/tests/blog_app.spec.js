@@ -1,7 +1,17 @@
-const { test, describe ,expect ,beforeEach } = require('@playwright/test')
+const { test, describe, expect, beforeEach } = require('@playwright/test')
+const { loginWith } = require('./helper')
 
 describe('Blog app', () => {
-  beforeEach(async ({ page }) => {
+  beforeEach(async ({ page, request }) => {
+    await request.post('http://localhost:3003/api/testing/reset')
+    await request.post('http://localhost:3003/api/users', {
+      data: {
+        name: 'Jules',
+        username: 'julesu',
+        password: 'pogi'
+      }
+    })
+
     await page.goto('http://localhost:5173')
   })
   test('Login form is shown', async ({ page }) => {
@@ -13,17 +23,24 @@ describe('Blog app', () => {
   })
 
   test('user can login', async ({ page }) => {
-    await page.getByRole('textbox').first().fill('root')
-    await page.getByRole('textbox').last().fill('sekret')
-    await page.getByRole('button', { name: 'login' }).click()
+    await loginWith(page, 'julesu', 'pogi')
+    await expect(page.getByText('Jules logged in')).toBeVisible()
+  })
 
-    await expect(page.getByText('Superuser logged in')).toBeVisible()
+  describe('Login', () => {
+    beforeEach(async ({ page }) => {
+      await loginWith(page, 'julesu', 'pogi')
+      await page.getByRole('button', { name: 'login' }).click()
+    })
+
+    test('succeeds with correct credentials', async ({ page }) => {
+
+    })
   })
 
   describe('when logged in', () => {
     beforeEach(async ({ page }) => {
-      await page.getByLabel('username').fill('root')
-      await page.getByLabel('password').fill('sekret')
+      await loginWith(page, 'julesu', 'pogi')
       await page.getByRole('button', { name: 'login' }).click()
     })
 
@@ -31,11 +48,12 @@ describe('Blog app', () => {
       await page.getByRole('button', { name: 'create new blog' }).click()
 
       await page.getByLabel('title').fill('a blog created by playwright')
-      await page.getByLabel('author').fill('Superuser')
+      await page.getByLabel('author').fill('Jules')
       await page.getByLabel('url').fill('example.com')
       await page.getByRole('button', { name: 'create' }).click()
 
-      await expect(page.getByText('a blog created by playwright').first()).toBeVisible()
+      await expect(page.getByText('a new blog a blog created by playwright by jules added')).toBeVisible()
+      await expect(page.locator('.blogNotif').getByText('a blog created by playwright')).toBeVisible()
     })
   })
 })
