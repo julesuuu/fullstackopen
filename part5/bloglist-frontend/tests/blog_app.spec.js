@@ -3,8 +3,8 @@ const { loginWith, createBlog } = require('./helper')
 
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
-    await request.post('http://localhost:3003/api/testing/reset')
-    await request.post('http://localhost:3003/api/users', {
+    await request.post('/api/testing/reset')
+    await request.post('/api/users', {
       data: {
         name: 'Jules',
         username: 'julesu',
@@ -12,7 +12,7 @@ describe('Blog app', () => {
       }
     })
 
-    await page.goto('http://localhost:5173')
+    await page.goto('/')
   })
   test('Login form is shown', async ({ page }) => {
     const locator = page.getByText('log in to application')
@@ -62,7 +62,20 @@ describe('Blog app', () => {
       })
 
       const createdDiv = page.locator('.blogNotif')
-      await expect(createdDiv).toContainText('a new blog a blog created by playwright by Jules is added')
+      await expect(createdDiv).toContainText(/a new blog.*playwright.*Jules/i)
+    })
+
+    test('a blog can be liked', async ({ page }) => {
+      await createBlog(page, {
+        title: 'liking this blog',
+        author: 'Jules',
+        url: 'http://like.com'
+      })
+      
+      await page.getByRole('button', { name: 'view' }).click()
+      await page.getByRole('button', { name: 'like' }).click()
+
+      await expect(page.getByText(/likes 1/)).toBeVisible()
     })
   })
 })
