@@ -1,5 +1,6 @@
 const { test, describe, expect, beforeEach } = require('@playwright/test')
 const { loginWith, createBlog } = require('./helper')
+const { default: login } = require('../src/services/login')
 
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
@@ -76,6 +77,32 @@ describe('Blog app', () => {
       await page.getByRole('button', { name: 'like' }).click()
 
       await expect(page.getByText(/likes 1/)).toBeVisible()
+    })
+  })
+
+  describe('deletion and permission', () => {
+    beforeEach(async ({ page }) => {
+      await loginWith(page, 'julesu', 'pogi')
+    })
+
+    test('a blog can be deleted', async ({ page }) => {
+      await createBlog(page, {
+        title: 'deleting this blog',
+        author: 'Jules',
+        url: 'http://delete.com'
+      })
+
+      await page.getByRole('button', { name: 'view' }).click()
+      await expect(page.getByRole('button', { name: 'remove' })).toBeVisible()
+
+      page.on('dialog', async dialog => {
+        await dialog.accept()
+      })
+
+      await page.getByRole('button', { name: 'remove' }).click()
+      
+      const deletedDiv = page.locator('.blogNotif')
+      await expect(deletedDiv).toContainText(/Deleted deleting this blog/i)
     })
   })
 })
