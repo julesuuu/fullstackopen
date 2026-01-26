@@ -13,6 +13,14 @@ describe('Blog app', () => {
       }
     })
 
+    await request.post('/api/users', {
+      data: {
+        name: 'Superuser',
+        username: 'root',
+        password: 'sekret'
+      }
+    })
+
     await page.goto('/')
   })
   test('Login form is shown', async ({ page }) => {
@@ -103,6 +111,26 @@ describe('Blog app', () => {
       
       const deletedDiv = page.locator('.blogNotif')
       await expect(deletedDiv).toContainText(/Deleted deleting this blog/i)
+    })
+    
+    test('remove button can only be seen by who created it', async ({ page }) => {
+      await createBlog(page, {
+        title: 'remove button seen',
+        author: 'Jules',
+        url: 'http://remove.com'
+      })
+
+      await page.getByRole('button', { name: 'view' }).click()
+      await expect(page.getByRole('button', { name: 'remove' })).toBeVisible()
+      
+      await page.getByRole('button', { name: 'logout' }).click()
+      await expect(page.getByText('Log in to application')).toBeVisible()
+
+      await loginWith(page, 'root', 'sekret')
+      await expect(page.getByText('Superuser logged in')).toBeVisible()
+
+      await page.getByRole('button', { name: 'view' }).click()
+      await expect(page.getByRole('button', {name: 'remove'})).not.toBeVisible()
     })
   })
 })
