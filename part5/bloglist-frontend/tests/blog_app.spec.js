@@ -1,5 +1,5 @@
 const { test, describe, expect, beforeEach } = require('@playwright/test')
-const { loginWith } = require('./helper')
+const { loginWith, createBlog } = require('./helper')
 
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
@@ -30,30 +30,39 @@ describe('Blog app', () => {
   describe('Login', () => {
     beforeEach(async ({ page }) => {
       await loginWith(page, 'julesu', 'pogi')
-      await page.getByRole('button', { name: 'login' }).click()
     })
 
     test('succeeds with correct credentials', async ({ page }) => {
+      await loginWith(page, 'julesu', 'pogi')
 
+      await expect(page.getByRole('button', { name: 'login' })).not.toBeVisible()
+      await expect(page.getByText('Jules logged in')).toBeVisible()
+    })
+
+    test('fails with wrong credentials', async ({ page }) => {
+      await loginWith(page, 'julesu', 'wrongpassword')
+
+      //await expect(page.getByText('wrong username or password')).toBeVisible()
+
+      const errorDiv = page.locator('.blogNotif')
+      await expect(errorDiv).toContainText('wrong username or password')
     })
   })
 
   describe('when logged in', () => {
     beforeEach(async ({ page }) => {
       await loginWith(page, 'julesu', 'pogi')
-      await page.getByRole('button', { name: 'login' }).click()
     })
 
     test('a new blog can be created', async ({ page }) => {
-      await page.getByRole('button', { name: 'create new blog' }).click()
+      await createBlog(page, {
+        title: 'a blog created by playwright',
+        author: 'Jules',
+        url: 'http://test.com'
+      })
 
-      await page.getByLabel('title').fill('a blog created by playwright')
-      await page.getByLabel('author').fill('Jules')
-      await page.getByLabel('url').fill('example.com')
-      await page.getByRole('button', { name: 'create' }).click()
-
-      await expect(page.getByText('a new blog a blog created by playwright by jules added')).toBeVisible()
-      await expect(page.locator('.blogNotif').getByText('a blog created by playwright')).toBeVisible()
+      const createdDiv = page.locator('.blogNotif')
+      await expect(createdDiv).toContainText('a new blog a blog created by playwright by Jules is added')
     })
   })
 })

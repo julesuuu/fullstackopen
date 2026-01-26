@@ -55,6 +55,7 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
+
     } catch {
       notify('wrong username or password', 'error')
     }
@@ -82,7 +83,7 @@ const App = () => {
       blogFormRef.current.toggleVisibility()
 
       setBlogs([...blogs, blogToDisplay])
-      notify(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`)
+      notify(`a new blog ${returnedBlog.title} by ${returnedBlog.author} is added`)
 
     } catch (exception) {
       console.log('Error creating blog', exception)
