@@ -1,6 +1,7 @@
 const { test, describe, expect, beforeEach } = require('@playwright/test')
 const { loginWith, createBlog } = require('./helper')
 const { default: login } = require('../src/services/login')
+const { title } = require('node:process')
 
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
@@ -85,6 +86,41 @@ describe('Blog app', () => {
       await page.getByRole('button', { name: 'like' }).click()
 
       await expect(page.getByText(/likes 1/)).toBeVisible()
+    })
+
+    test('blogs are sorted by likes', async ({ page }) => {
+      const notif = page.locator('.blogNotif')
+
+      await createBlog(page, { title: 'least likes', author: 'Jules', url: 'http://least.com' })
+      await expect(notif).toContainText('least likes').toBeVisible
+
+      await createBlog(page, { title: 'most likes', author: 'Jules', url: 'http://most.com' })
+      await expect(notif).toContainText('most likes').toBeVisible
+
+      await createBlog(page, { title: 'lots of likes', author: 'Jules', url: 'http://lots.com' })
+      await expect(notif).toContainText('lots of likes').toBeVisible
+
+      await expect(page.locator('.blog')).toHaveCount(3)
+
+      const mostLikesBlog = page.locator('.blog').filter({ hasText: 'most likes' })
+      await mostLikesBlog.getByRole('button', { name: 'view' }).click()
+      for (let i = 0; i < 3; i++) {
+        await mostLikesBlog.getByRole('button', { name: 'like' }).click()
+        await expect(mostLikesBlog).toContainText(`likes ${i + 1}`)
+      }
+
+      const lotsOfLikesBlog = page.locator('.blog').filter({ hasText: 'lots of likes' })
+      await lotsOfLikesBlog.getByRole('button', { name: 'view' }).click()
+      await lotsOfLikesBlog.getByRole('button', { name: 'like' }).click()
+      await expect(lotsOfLikesBlog).toContainText('likes 1')
+
+      const blogs = await page.locator('.blog').all()
+
+      await expect(blogs[0]).toContainText('most likes')
+
+      await expect(blogs[1]).toContainText('lots of likes')
+
+      await expect(blogs[2]).toContainText('least likes')
     })
   })
 
