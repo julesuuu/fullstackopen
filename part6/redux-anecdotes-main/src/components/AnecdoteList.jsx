@@ -3,15 +3,15 @@ import { voteAnecdote } from '../reducers/anecdoteReducer'
 
 const AnecdoteList = () => {
   const anecdotes = useSelector(({ filter, anecdotes }) => {
-    if (filter === 'ALL') {
+    if (filter === 'ALL' || filter === '') {
       return [...anecdotes].sort((a, b) => b.votes - a.votes)
     }
 
     return anecdotes
       .filter(anecdote =>
         anecdote.content.toLowerCase().includes(filter.toLowerCase())
-    )
-    .sort((a, b) => b.votes - a.votes)
+      )
+      .sort((a, b) => b.votes - a.votes)
   })
 
   const dispatch = useDispatch()
