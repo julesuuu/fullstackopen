@@ -13,7 +13,7 @@ const getAll = async () => {
 const createNew = async (content) => {
   const options = {
     method: 'POST',
-    header: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ content, votes: 0 })
   }
 
@@ -26,4 +26,13 @@ const createNew = async (content) => {
   return await response.json()
 }
 
-export default { getAll, createNew }
+const update = async (id, newObject) => {
+  const response = await fetch(`${baseUrl}/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json'},
+    body: JSON.stringify(newObject)
+  })
+  return await response.json()
+}
+
+export default { getAll, createNew, update }
