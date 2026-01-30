@@ -100,11 +100,12 @@ const CreateNew = (props) => {
   )
 }
 
-const Anecdote = ({ anecdote }) => {
+const Anecdote = ({ anecdote, onVote }) => {
   return (
     <div>
       <h2>{anecdote.content} by {anecdote.author}</h2>
       <p>has {anecdote.votes} votes</p>
+      <button onClick={() => onVote(anecdote.id)}>vote</button>
       <p>for more info see: <a href={anecdote.info}>{anecdote.info}</a></p>
     </div>
   )
@@ -171,7 +172,7 @@ const App = () => {
       )}
       
       <Routes>
-        <Route path="/anecdotes/:id" element={<Anecdote anecdote={anecdote} />} />
+        <Route path="/anecdotes/:id" element={<Anecdote anecdote={anecdote} onVote={vote} />} />
         <Route path="/" element={<AnecdoteList anecdotes={anecdotes} />} />
         <Route path="/about" element={<About />} />
         <Route path="/create" element={<CreateNew addNew={addNew} />} />
