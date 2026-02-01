@@ -6,23 +6,22 @@ import BlogForm from './components/BlogForm.jsx'
 import Togglable from './components/Togglable.jsx'
 import blogService from './services/blogs'
 import loginService from './services/login.js'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { setNotification } from './reducers/notificationReducer.js'
+import { initializedBlogs, createBlog } from './reducers/blogReducer.js'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
   const blogFormRef = useRef()
   const dispatch = useDispatch()
+  const blogs = useSelector(state => state.blogs)
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs(blogs)
-    )
-  }, [])
+    dispatch(initializedBlogs())
+  }, [dispatch])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -62,21 +61,10 @@ const App = () => {
 
   const handleCreateBlog = async (blogObject) => {
     try {
-      const returnedBlog = await blogService.create(blogObject)
-
-      const blogToDisplay = {
-        ...returnedBlog,
-        user: {
-          name: user.name,
-          username: user.username,
-          id: returnedBlog.user
-        }
-      }
+      dispatch(createBlog(blogObject))
 
       blogFormRef.current.toggleVisibility()
-
-      setBlogs([...blogs, blogToDisplay])
-      dispatch(setNotification(`a new blog ${returnedBlog.title} by ${returnedBlog.author} is added`, 'success', 5))
+      dispatch(setNotification(`a new blog ${blogObject.title} by ${blogObject.author} is added`, 'success', 5))
 
     } catch (exception) {
       dispatch(setNotification('error creating blog', 'error', 5))
