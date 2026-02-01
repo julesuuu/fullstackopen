@@ -15,11 +15,11 @@ const App = () => {
   const [notification, setNotification] = useState(null)
   const [notificationType, setNotificationType] = useState('success')
 
-  const blogFormRef = useRef( )
+  const blogFormRef = useRef()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs( blogs )
+      setBlogs(blogs)
     )
   }, [])
 
@@ -152,7 +152,7 @@ const App = () => {
         <button onClick={handleLogout}>logout</button>
       </p>
       <Togglable buttonLabel='create new blog' ref={blogFormRef} >
-        <BlogForm createBlog={handleCreateBlog}/>
+        <BlogForm createBlog={handleCreateBlog} />
       </Togglable>
       {sortedBlogs.map(blog =>
         <Blog
