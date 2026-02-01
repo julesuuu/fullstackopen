@@ -9,11 +9,14 @@ import loginService from './services/login.js'
 import { useDispatch, useSelector } from 'react-redux'
 import { setNotification } from './reducers/notificationReducer.js'
 import { initializedBlogs, createBlog, voteBlog, deleteBlog } from './reducers/blogReducer.js'
+import { useUser, useUserDispatch } from './UserContext.jsx'
 
 const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
+
+  const user = useUser()
+  const userDispatch = useUserDispatch()
 
   const blogFormRef = useRef()
   const dispatch = useDispatch()
@@ -27,7 +30,7 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      setUser(user)
+      userDispatch({ type: 'LOGIN', payload: 'user' })
       blogService.setToken(user.token)
     }
   }, [])
@@ -37,14 +40,15 @@ const App = () => {
 
     try {
       const user = await loginService.login({ username, password })
-      console.log('🚀 ~ :24 ~ handleLogin ~ user:', user)
 
       blogService.setToken(user.token)
 
       window.localStorage.setItem(
         'loggedBlogappUser', JSON.stringify(user)
       )
-      setUser(user)
+
+      userDispatch({ type: 'LOGIN', payload: user })
+
       setUsername('')
       setPassword('')
 
@@ -54,9 +58,8 @@ const App = () => {
   }
 
   const handleLogout = () => {
-
     window.localStorage.removeItem('loggedBlogappUser')
-    setUser(null)
+    userDispatch({ type: 'LOGOUT' })
   }
 
   const handleCreateBlog = async (blogObject) => {
@@ -124,7 +127,6 @@ const App = () => {
           blog={blog}
           handleLike={() => handleLike(blog)}
           handleDelete={() => handleDelete(blog)}
-          user={user}
         />
       )}
     </div>
