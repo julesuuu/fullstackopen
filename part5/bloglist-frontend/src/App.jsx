@@ -7,7 +7,7 @@ import Togglable from './components/Togglable.jsx'
 import blogService from './services/blogs'
 import loginService from './services/login.js'
 import { useDispatch } from 'react-redux'
-import { setNotification, clearNotification } from './reducers/notificationReducer.js'
+import { setNotification } from './reducers/notificationReducer.js'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -76,10 +76,10 @@ const App = () => {
       blogFormRef.current.toggleVisibility()
 
       setBlogs([...blogs, blogToDisplay])
-      notify(`a new blog ${returnedBlog.title} by ${returnedBlog.author} is added`)
+      dispatch(setNotification(`a new blog ${returnedBlog.title} by ${returnedBlog.author} is added`, 'success', 5))
 
     } catch (exception) {
-      console.log('Error creating blog', exception)
+      dispatch(setNotification('error creating blog', 'error', 5))
     }
   }
 
@@ -90,9 +90,9 @@ const App = () => {
 
         setBlogs(blogs.filter(b => b.id !== blog.id))
 
-        notify(`Deleted ${blog.title}`)
+        dispatch(setNotification(`delete '${blog.title}' successfully`, 'success', 5))
       } catch (exception) {
-        notify('Error could not delete the blog', 'error', exception)
+        dispatch('error could not delete the blog', 'error', 5)
       }
     }
   }
@@ -112,8 +112,10 @@ const App = () => {
         user: blog.user
       }
       setBlogs(blogs.map(b => (b.id !== blog.id ? b : blogWithUser)))
+      dispatch(setNotification(`you liked '${blog.title}'`, 'success', 5))
     } catch (exception) {
       notify('something went wrong', 'error', exception)
+      dispatch(setNotification(`something went wrong liking '${blog.title}'`, 'error', 5))
     }
   }
 
