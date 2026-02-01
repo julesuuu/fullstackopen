@@ -8,7 +8,7 @@ import blogService from './services/blogs'
 import loginService from './services/login.js'
 import { useDispatch, useSelector } from 'react-redux'
 import { setNotification } from './reducers/notificationReducer.js'
-import { initializedBlogs, createBlog } from './reducers/blogReducer.js'
+import { initializedBlogs, createBlog, voteBlog, deleteBlog } from './reducers/blogReducer.js'
 
 const App = () => {
   const [username, setUsername] = useState('')
@@ -74,9 +74,7 @@ const App = () => {
   const handleDelete = async (blog) => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
       try {
-        await blogService.remove(blog.id)
-
-        setBlogs(blogs.filter(b => b.id !== blog.id))
+        dispatch(deleteBlog(blog.id))
 
         dispatch(setNotification(`delete '${blog.title}' successfully`, 'success', 5))
       } catch (exception) {
@@ -86,25 +84,8 @@ const App = () => {
   }
 
   const handleLike = async (blog) => {
-    const blogToUpdate = {
-      ...blog,
-      likes: blog.likes + 1,
-      user: blog.user.id
-    }
-
-    try {
-      const returnedBlog = await blogService.update(blog.id, blogToUpdate)
-
-      const blogWithUser = {
-        ...returnedBlog,
-        user: blog.user
-      }
-      setBlogs(blogs.map(b => (b.id !== blog.id ? b : blogWithUser)))
-      dispatch(setNotification(`you liked '${blog.title}'`, 'success', 5))
-    } catch (exception) {
-      notify('something went wrong', 'error', exception)
-      dispatch(setNotification(`something went wrong liking '${blog.title}'`, 'error', 5))
-    }
+    dispatch(voteBlog(blog))
+    dispatch(setNotification(`you liked '${blog.title}'`, 'success', 5))
   }
 
   if (user === null) {
