@@ -6,16 +6,17 @@ import BlogForm from './components/BlogForm.jsx'
 import Togglable from './components/Togglable.jsx'
 import blogService from './services/blogs'
 import loginService from './services/login.js'
+import { useDispatch } from 'react-redux'
+import { setNotification, clearNotification } from './reducers/notificationReducer.js'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [notification, setNotification] = useState(null)
-  const [notificationType, setNotificationType] = useState('success')
 
   const blogFormRef = useRef()
+  const dispatch = useDispatch()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -31,14 +32,6 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
-
-  const notify = (message, type = 'success') => {
-    setNotification(message)
-    setNotificationType(type)
-    setTimeout(() => {
-      setNotification(null)
-    }, 5000)
-  }
 
   const handleLogin = async event => {
     event.preventDefault()
@@ -57,7 +50,7 @@ const App = () => {
       setPassword('')
 
     } catch {
-      notify('wrong username or password', 'error')
+      dispatch(setNotification('wrong username or password', 'error', 5))
     }
   }
 
@@ -128,7 +121,7 @@ const App = () => {
     return (
       <div>
         <h2>Log in to application</h2>
-        <Notification message={notification} type={notificationType} />
+        <Notification />
 
         <LoginForm
           username={username}
@@ -146,7 +139,7 @@ const App = () => {
   return (
     <div>
       <h2>{user === null ? 'Login to application' : 'blogs'}</h2>
-      <Notification message={notification} type={notificationType} />
+      <Notification />
       <p>
         {user.name} logged in
         <button onClick={handleLogout}>logout</button>
