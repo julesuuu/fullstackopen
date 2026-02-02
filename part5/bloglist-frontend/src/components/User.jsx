@@ -1,18 +1,27 @@
+import { ListGroup, Badge } from 'react-bootstrap'
+
 const User = ({ user }) => {
   if (!user) return null
 
   return (
-    <div>
-      <h2>{user.name}</h2>
-      <h3>added blogs</h3>
-      <p>number of blogs found: {user.blogs.length}</p>
-      <ul>
+    <div className="mt-4">
+      <h2 className="mb-1">{user.name}</h2>
+      <div className="text-muted mb-4">
+        Total blogs added: <Badge bg="info">{user.blogs.length}</Badge>
+      </div>
+
+      <h3>Added Blogs</h3>
+      <ListGroup className="mt-3">
         {user.blogs.map(blog => (
-          <li key={blog.id}>
+          <ListGroup.Item key={blog.id}>
             {blog.title}
-          </li>
+          </ListGroup.Item>
         ))}
-      </ul>
+      </ListGroup>
+
+      {user.blogs.length === 0 && (
+        <p className="text-muted mt-2">This user hasn't added any blogs yet.</p>
+      )}
     </div>
   )
 }

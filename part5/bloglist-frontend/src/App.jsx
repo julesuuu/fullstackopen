@@ -15,7 +15,7 @@ import { useUser, useUserDispatch } from './UserContext.jsx'
 import Users from './components/Users.jsx'
 import User from './components/User.jsx'
 import BlogView from './components/BlogView.jsx'
-import { Navbar, Nav, Button } from 'react-bootstrap'
+import { Navbar, Nav, Button, ListGroup } from 'react-bootstrap'
 
 const App = () => {
   const [username, setUsername] = useState('')
@@ -176,11 +176,13 @@ const App = () => {
             <Togglable buttonLabel='create new blog' ref={blogFormRef} >
               <BlogForm createBlog={handleCreateBlog} />
             </Togglable>
-            {sortedBlogs.map(blog =>
-              <div key={blog.id} style={{ padding: 5, border: '1px solid black', marginBottom: 5 }}>
-                <Link to={`/blogs/${blog.id}`}>{blog.title} by {blog.author}</Link>
-              </div>
-            )}
+            <ListGroup className="mt-4">
+              {sortedBlogs.map(blog => (
+                <ListGroup.Item action as={Link} to={`/blogs/${blog.id}`} key={blog.id}>
+                  <strong>{blog.title}</strong> by <em>{blog.author}</em>
+                </ListGroup.Item>
+              ))}
+            </ListGroup>
           </div>
         } />
       </Routes>

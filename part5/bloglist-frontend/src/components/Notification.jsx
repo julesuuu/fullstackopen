@@ -1,4 +1,5 @@
 import { useSelector } from 'react-redux'
+import { Alert } from 'react-bootstrap'
 
 const Notification = () => {
   const notification = useSelector(state => state.notification)
@@ -7,20 +8,12 @@ const Notification = () => {
     return null
   }
 
-  const notificationStyle = {
-    color: notification.type === 'error' ? 'red' : 'green',
-    background: 'lightgray',
-    fontSize: 20,
-    borderStyle: 'solid',
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10
-  }
+  const variant = notification.type === 'error' ? 'danger' : 'success'
 
   return (
-    <div className='blogNotif' style={notificationStyle}>
+    <Alert variant={variant} className="mt-3">
       {notification.message}
-    </div>
+    </Alert>
   )
 }
 
