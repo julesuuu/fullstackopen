@@ -6,6 +6,7 @@ import { BrowserRouter as Router } from 'react-router-dom'
 import notificationReducer from './reducers/notificationReducer'
 import blogReducer from './reducers/blogReducer'
 import { UserContextProvider } from './UserContext'
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 const store = configureStore({
   reducer: {

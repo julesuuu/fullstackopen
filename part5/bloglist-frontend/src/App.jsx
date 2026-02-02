@@ -15,6 +15,7 @@ import { useUser, useUserDispatch } from './UserContext.jsx'
 import Users from './components/Users.jsx'
 import User from './components/User.jsx'
 import BlogView from './components/BlogView.jsx'
+import { Navbar, Nav, Button } from 'react-bootstrap'
 
 const App = () => {
   const [username, setUsername] = useState('')
@@ -115,19 +116,46 @@ const App = () => {
     dispatch(setNotification(`you liked '${blog.title}'`, 'success', 5))
   }
 
+  const Navigation = ({ user, handleLogout }) => {
+    return (
+      <div className='container'>
+        <Navbar collapseOnSelect expand="lg" bg="light" variant="light">
+          <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+          <Navbar.Collapse id="responsive-navbar-nav">
+            <Nav className="me-auto">
+              <Nav.Link as={Link} to="/">blogs</Nav.Link>
+              <Nav.Link as={Link} to="/users">users</Nav.Link>
+            </Nav>
+            <Nav>
+              <Navbar.Text className="me-2">
+                {user.name} logged in
+              </Navbar.Text>
+              <Button variant="outline-secondary" size="sm" onClick={handleLogout}>
+                logout
+              </Button>
+            </Nav>
+          </Navbar.Collapse>
+        </Navbar>
+      </div>
+    )
+  }
+
   if (user === null) {
     return (
-      <div>
-        <h2>Log in to application</h2>
-        <Notification />
-
-        <LoginForm
-          username={username}
-          password={password}
-          handleUsernameChange={({ target }) => setUsername(target.value)}
-          handlePasswordChange={({ target }) => setPassword(target.value)}
-          handleSubmit={handleLogin}
-        />
+      <div className='container mt-5'>
+        <div className='row justify-content-center'>
+          <div className='col-md-6' >
+            <h2 className='text-center'>Log in to application</h2>
+            <Notification />
+            <LoginForm
+              username={username}
+              password={password}
+              handleUsernameChange={({ target }) => setUsername(target.value)}
+              handlePasswordChange={({ target }) => setPassword(target.value)}
+              handleSubmit={handleLogin}
+            />
+          </div>
+        </div>
       </div>
     )
   }
@@ -136,13 +164,7 @@ const App = () => {
 
   return (
     <div>
-      <nav style={{ padding: 10, background: '#eee', marginBottom: 10 }}>
-        <Link style={{ padding: 5 }} to='/'>blogs</Link>
-        <Link style={{ padding: 5 }} to='/users'>users</Link>
-        <span>
-          {user.name} logged in <button onClick={handleLogout}>logout</button>
-        </span>
-      </nav>
+      <Navigation user={user} handleLogout={handleLogout} />
       <h2>{user === null ? 'Login to application' : 'blogs'}</h2>
       <Notification />
       <Routes>
