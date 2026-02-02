@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { Routes, Route, Link } from 'react-router-dom'
+import { Routes, Route, Link, useMatch } from 'react-router-dom'
 import Blog from './components/Blog'
 import Notification from './components/Notification.jsx'
 import LoginForm from './components/LoginForm.jsx'
@@ -7,15 +7,19 @@ import BlogForm from './components/BlogForm.jsx'
 import Togglable from './components/Togglable.jsx'
 import blogService from './services/blogs'
 import loginService from './services/login.js'
+import userService from './services/users.js'
 import { useDispatch, useSelector } from 'react-redux'
 import { setNotification } from './reducers/notificationReducer.js'
 import { initializedBlogs, createBlog, voteBlog, deleteBlog } from './reducers/blogReducer.js'
 import { useUser, useUserDispatch } from './UserContext.jsx'
 import Users from './components/Users.jsx'
+import User from './components/User.jsx'
 
 const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+
+  const [allUsers, setAllUsers] = useState([])
 
   const user = useUser()
   const userDispatch = useUserDispatch()
@@ -36,6 +40,18 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
+
+  useEffect(() => {
+    userService
+      .getAll()
+      .then(data =>
+        setAllUsers(data))
+  }, [])
+
+  const match = useMatch('/users/:id')
+  const userToShow = match
+    ? allUsers.find(u => u.id === match.params.id)
+    : null
 
   const handleLogin = async event => {
     event.preventDefault()
@@ -124,6 +140,7 @@ const App = () => {
       <h2>{user === null ? 'Login to application' : 'blogs'}</h2>
       <Notification />
       <Routes>
+        <Route path='users/:id' element={<User user={userToShow} />}></Route>
         <Route path='/users' element={<Users />} />
         <Route path="/" element={
           <div>
