@@ -83,8 +83,11 @@ blogsRouter.put('/:id', (request, response, next) => {
       blog.likes = likes || 0
 
       return blog.save().then((updatedBlog) => {
-        response.json(updatedBlog)
+        return updatedBlog.populate('user', { username: 1, name: 1 })
       })
+        .then((populatedBlog) => {
+          response.json(populatedBlog)
+        })
     })
     .catch((error) => next(error))
 })
