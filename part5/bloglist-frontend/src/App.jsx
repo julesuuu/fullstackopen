@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { Routes, Route, Link } from 'react-router-dom'
 import Blog from './components/Blog'
 import Notification from './components/Notification.jsx'
 import LoginForm from './components/LoginForm.jsx'
@@ -10,6 +11,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setNotification } from './reducers/notificationReducer.js'
 import { initializedBlogs, createBlog, voteBlog, deleteBlog } from './reducers/blogReducer.js'
 import { useUser, useUserDispatch } from './UserContext.jsx'
+import Users from './components/Users.jsx'
 
 const App = () => {
   const [username, setUsername] = useState('')
@@ -30,7 +32,7 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      userDispatch({ type: 'LOGIN', payload: 'user' })
+      userDispatch({ type: 'LOGIN', payload: user })
       blogService.setToken(user.token)
     }
   }, [])
@@ -112,23 +114,33 @@ const App = () => {
 
   return (
     <div>
+      <nav style={{ padding: 10, background: '#eee', marginBottom: 10 }}>
+        <Link style={{ padding: 5 }} to='/'>blogs</Link>
+        <Link style={{ padding: 5 }} to='/users'>users</Link>
+        <span>
+          {user.name} logged in <button onClick={handleLogout}>logout</button>
+        </span>
+      </nav>
       <h2>{user === null ? 'Login to application' : 'blogs'}</h2>
       <Notification />
-      <p>
-        {user.name} logged in
-        <button onClick={handleLogout}>logout</button>
-      </p>
-      <Togglable buttonLabel='create new blog' ref={blogFormRef} >
-        <BlogForm createBlog={handleCreateBlog} />
-      </Togglable>
-      {sortedBlogs.map(blog =>
-        <Blog
-          key={blog.id}
-          blog={blog}
-          handleLike={() => handleLike(blog)}
-          handleDelete={() => handleDelete(blog)}
-        />
-      )}
+      <Routes>
+        <Route path='/users' element={<Users />} />
+        <Route path="/" element={
+          <div>
+            <Togglable buttonLabel='create new blog' ref={blogFormRef} >
+              <BlogForm createBlog={handleCreateBlog} />
+            </Togglable>
+            {sortedBlogs.map(blog =>
+              <Blog
+                key={blog.id}
+                blog={blog}
+                handleLike={() => handleLike(blog)}
+                handleDelete={() => handleDelete(blog)}
+              />
+            )}
+          </div>
+        } />
+      </Routes>
     </div>
   )
 }
