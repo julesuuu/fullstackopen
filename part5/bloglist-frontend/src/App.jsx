@@ -14,6 +14,7 @@ import { initializedBlogs, createBlog, voteBlog, deleteBlog } from './reducers/b
 import { useUser, useUserDispatch } from './UserContext.jsx'
 import Users from './components/Users.jsx'
 import User from './components/User.jsx'
+import BlogView from './components/BlogView.jsx'
 
 const App = () => {
   const [username, setUsername] = useState('')
@@ -51,6 +52,11 @@ const App = () => {
   const match = useMatch('/users/:id')
   const userToShow = match
     ? allUsers.find(u => u.id === match.params.id)
+    : null
+
+  const blogMatch = useMatch('blogs/:id')
+  const blogToShow = blogMatch
+    ? blogs.find(b => b.id === blogMatch.params.id)
     : null
 
   const handleLogin = async event => {
@@ -140,6 +146,7 @@ const App = () => {
       <h2>{user === null ? 'Login to application' : 'blogs'}</h2>
       <Notification />
       <Routes>
+        <Route path='blogs/:id' element={<BlogView blog={blogToShow} handleLike={handleLike} />} />
         <Route path='users/:id' element={<User user={userToShow} />}></Route>
         <Route path='/users' element={<Users />} />
         <Route path="/" element={
@@ -148,12 +155,9 @@ const App = () => {
               <BlogForm createBlog={handleCreateBlog} />
             </Togglable>
             {sortedBlogs.map(blog =>
-              <Blog
-                key={blog.id}
-                blog={blog}
-                handleLike={() => handleLike(blog)}
-                handleDelete={() => handleDelete(blog)}
-              />
+              <div key={blog.id} style={{ padding: 5, border: '1px solid black', marginBottom: 5 }}>
+                <Link to={`/blogs/${blog.id}`}>{blog.title} by {blog.author}</Link>
+              </div>
             )}
           </div>
         } />
