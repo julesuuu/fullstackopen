@@ -10,6 +10,13 @@ const BlogView = ({ blog, handleLike }) => {
         <button onClick={() => handleLike(blog)}>like</button>
       </div>
       <div>added by {blog.user?.name}</div>
+
+      <h3>comments</h3>
+      <ul>
+        {blog.comments.map((comment, index) => (
+          <li key={index}>{comment}</li>
+        ))}
+      </ul>
     </div>
   )
 }
