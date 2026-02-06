@@ -3,19 +3,21 @@ const Books = (props) => {
     return null
   }
 
-  const books = []
+  const books = props.books
 
   return (
     <div>
       <h2>books</h2>
 
       <table>
-        <tbody>
+        <thead>
           <tr>
             <th></th>
             <th>author</th>
             <th>published</th>
           </tr>
+        </thead>
+        <tbody>
           {books.map((a) => (
             <tr key={a.id}>
               <td>{a.title}</td>
