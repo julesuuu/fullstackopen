@@ -11,7 +11,11 @@ const Authors = (props) => {
 
   const [updateAuthor] = useMutation(UPDATE_AUTHOR, {
     refetchQueries: [{ query: ALL_AUTHORS }],
-    onError: (error) => setError(error.message)
+    onCompleted: (data) => {
+      if (!data.editAuthor) {
+        setError('author not found')
+      }
+    }
   })
 
   if (!props.show) {
@@ -47,13 +51,17 @@ const Authors = (props) => {
       <h2>Set birthyear</h2>
       <form onSubmit={submit}>
         <div>
-          name <input
-            value={name}
-            onChange={({ target }) => setName(target.value)}
-          />
+          name
+          <select value={name} onChange={({ target }) => setName(target.value)}>
+            <option value="">Select an author...</option>
+            {authors.map(a => (
+              <option key={a.id} value={a.name}>{a.name}</option>
+            ))}
+          </select>
         </div>
         <div>
           born <input
+            type='number'
             value={born}
             onChange={({ target }) => setBorn(target.value)}
           />
