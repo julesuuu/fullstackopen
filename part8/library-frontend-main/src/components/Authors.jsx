@@ -12,6 +12,7 @@ const Authors = (props) => {
   const [updateAuthor] = useMutation(UPDATE_AUTHOR, {
     refetchQueries: [{ query: ALL_AUTHORS }],
     onCompleted: (data) => {
+      console.log('mutation data', data)
       if (!data.editAuthor) {
         setError('author not found')
       }
