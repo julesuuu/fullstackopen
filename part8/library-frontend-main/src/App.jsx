@@ -12,13 +12,12 @@ const App = () => {
   const authors = useQuery(ALL_AUTHORS)
   const books = useQuery(ALL_BOOKS)
 
-  if (authors.loading) {
+  if (authors.loading || books.loading) {
     return <div>loading...</div>
   }
 
-  if (books.loading) {
-    return <div>loading...</div>
-  }
+  const authorsData = authors.data?.allAuthors || []
+  const booksData = books.data?.allBooks || []
 
   const notify = (message) => {
     setErrorMessage(message)
@@ -37,13 +36,13 @@ const App = () => {
       </div>
 
       <Authors
-        authors={authors.data.allAuthors}
+        authors={authorsData}
         show={page === 'authors'}
         setError={notify}
       />
 
       <Books
-        books={books.data.allBooks}
+        books={booksData}
         show={page === 'books'}
       />
 
