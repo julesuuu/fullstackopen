@@ -16,7 +16,6 @@ const NewBook = (props) => {
     onError: (error) => setError(error.message)
   })
 
-
   if (!props.show) {
     return null
   }

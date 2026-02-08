@@ -1,12 +1,14 @@
 import { useState } from 'react'
 import { ALL_AUTHORS, UPDATE_AUTHOR } from '../queries'
 import { useMutation } from '@apollo/client/react'
+import { useQuery } from '@apollo/client/react'
 
 const Authors = (props) => {
   const [name, setName] = useState('')
   const [born, setBorn] = useState('')
 
-  const authors = props.authors
+  const result = useQuery(ALL_AUTHORS)
+
   const setError = props.setError
 
   const [updateAuthor] = useMutation(UPDATE_AUTHOR, {
@@ -19,9 +21,12 @@ const Authors = (props) => {
     }
   })
 
-  if (!props.show) {
-    return null
-  }
+  if (!props.show) return null
+
+  if (result.loading) return <div>loading...</div>
+
+  const authors = result.data?.allAuthors || []
+  console.log('Current authors in state:', authors)
 
   const submit = async (event) => {
     event.preventDefault()
