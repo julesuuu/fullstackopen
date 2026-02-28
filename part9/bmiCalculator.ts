@@ -10,7 +10,7 @@ const parseBmiArguments = (args: string[]): BmiInputs => {
   const height = Number(args[2])
   const weight = Number(args[3])
 
-  if (isNaN(height) || (weight)) {
+  if (isNaN(height) || isNaN(weight)) {
     throw new Error('Height and Weight must be numbers')
   }
 
