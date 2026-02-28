@@ -1,30 +1,38 @@
-interface calculateValues {
-  value1: number,
-  value2: number
+interface BmiInputs {
+  height: number,
+  weight: number
 }
 
-const parseArguments = (args: string[]): calculateValues => {
+const parseBmiArguments = (args: string[]): BmiInputs => {
   if (args.length < 4) throw new Error('Not enough arguments')
   if (args.length > 4) throw new Error('Too many arguments')
 
-  if (!isNaN(Number(args[2])) && !isNaN(Number(args[3]))) {
-    return {
-      value1: Number(args[2]),
-      value2: Number(args[3])
-    }
-  } else {
-    throw new Error('Provided values were not numbers')
+  const height = Number(args[2])
+  const weight = Number(args[3])
+
+  if (isNaN(height) || (weight)) {
+    throw new Error('Height and Weight must be numbers')
+  }
+
+  if (height <= 0 || weight <= 0) {
+    throw new Error('Height and Weight must be positive numbers')
+  }
+
+  return {
+    height,
+    weight
   }
 }
 
 const calculateBmi = (height: number, weight: number): string => {
-  const result = weight / Math.pow(height / 100, 2)
+  const heightInMeters = height / 100
+  const bmi = weight / (heightInMeters * heightInMeters)
 
-  if (result <= 18.5) {
+  if (bmi <= 18.5) {
     return 'underweight'
-  } else if (result < 25) {
+  } else if (bmi < 25) {
     return 'normal range'
-  } else if (result < 30) {
+  } else if (bmi < 30) {
     return 'overweight range'
   } else {
     return 'obsese range'
@@ -32,15 +40,13 @@ const calculateBmi = (height: number, weight: number): string => {
 }
 
 try {
-  const { value1, value2 } = parseArguments(process.argv)
-  const bmiCategory = calculateBmi(value1, value2)
+  const { height, weight } = parseBmiArguments(process.argv)
+  const bmiCategory = calculateBmi(height, weight)
   console.log(bmiCategory)
 } catch (error: unknown) {
-  let errorMessage = 'Something bad happened'
+  let errorMessage = 'Error calculating BMI: '
   if (error instanceof Error) {
-    errorMessage += ' Error: ' + error.message
+    errorMessage += error.message
   }
   console.log(errorMessage)
 }
-
-console.log(calculateBmi(180, 74))
