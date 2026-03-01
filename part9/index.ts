@@ -16,7 +16,7 @@ app.get('/bmi', (req, res) => {
       return res.status(400).json({ error: 'missing parameters' })
     }
 
-    const heightNum = Number(height)
+    const heightNum = Number(height)  
     const weightNum = Number(weight)
 
     if (isNaN(heightNum) || isNaN(weightNum)) {
