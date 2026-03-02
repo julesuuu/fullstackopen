@@ -37,7 +37,7 @@ export const calculateBmi = (height: number, weight: number): string => {
   } else {
     return 'obsese range';
   }
-};
+};  
 if (require.main === module) {
   try {
     const { height, weight } = parseBmiArguments(process.argv);

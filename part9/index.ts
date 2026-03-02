@@ -1,5 +1,6 @@
 import express from 'express';
 import { calculateBmi } from './bmiCalculator';
+import { calculateExercises } from './exerciseCalculator';
 
 const app = express();
 app.use(express.json());
@@ -35,6 +36,42 @@ app.get('/bmi', (req, res) => {
       bmi
     });
 
+  } catch (error: unknown) {
+    let errorMessage = 'Something went wrong: ';
+    if (error instanceof Error) {
+      errorMessage += error.message;
+    }
+    return res.status(500).json({ error: errorMessage });
+  }
+});
+
+app.post('/exercises', (req, res) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { daily_exercises, target } = req.body;
+
+  if (!daily_exercises || target === undefined) {
+    return res.status(400).json({ error: 'parameters missing' });
+  }
+
+  if (!Array.isArray(daily_exercises) || typeof target !== 'number') {
+    return res.status(400).json({ error: 'malformatted parameters' });
+  }
+
+  if (!daily_exercises.every((hour: unknown) => typeof hour === 'number')) {
+    return res.status(400).json({ error: 'malformatted parameters' });
+  }
+
+  if (isNaN(target) || target <= 0) {
+    return res.status(400).json({ error: 'malformatted parameters' });
+  }
+
+  if (daily_exercises.some((hour: number) => hour < 0)) {
+    return res.status(400).json({ error: 'malformatted parameters' });
+  }
+
+  try {
+    const result = calculateExercises(target, daily_exercises);
+    return res.json(result);
   } catch (error: unknown) {
     let errorMessage = 'Something went wrong: ';
     if (error instanceof Error) {
