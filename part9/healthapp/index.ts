@@ -6,18 +6,18 @@ app.get("/hello", (_req, res) => {
   res.send("Hello Full Stack");
 });
 
-app.get("/bmi", (req, res): void => {
+app.get("/bmi", (req, res) => {
   const height = Number(req.query.height);
   const weight = Number(req.query.weight);
 
   if (isNaN(height) || isNaN(weight)) {
-    res.status(404).json({ error: "malformatted parameters" });
+    res.status(400).json({ error: "malformatted parameters" });
     return;
   }
 
   const result = calculateBmi(height, weight);
 
-  res.json({
+  return res.json({
     weight,
     height,
     bmi: result,
