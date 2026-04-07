@@ -29,8 +29,8 @@ const calculateExercises = (
   averageTime: number[],
   targetAmount: number,
 ): Result => {
-  let rating = 0;
-  let ratingDescription = "";
+  let rating: number;
+  let ratingDescription: string;
   const periodLength = averageTime.length;
   const trainingDays = averageTime.filter((n) => n > 0).length;
   const target = targetAmount;
