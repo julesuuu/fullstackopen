@@ -1,8 +1,8 @@
-name: Patientor API Tests
+name: Health app E2E Tests
 
 on:
   push:
-    branches: [xmain, xmaster]
+    branches: [main, master]
 
 jobs:
   test:
@@ -17,31 +17,31 @@ jobs:
         with:
           node-version: "24"
 
-      - name: Install patientor backend dependencies
-        working-directory: ./part9/patientor/backend
-        run: npm install --legacy-peer-deps
+      - name: Install healthapp dependencies
+        working-directory: ./healthapp
+        run: npm install
 
-      - name: Lint patientor backend
-        working-directory: ./part9/patientor/backend
+      - name: Lint healthapp
+        working-directory: ./healthapp
         run: npm run lint
 
-      - name: Start patientor backend server
-        working-directory: ./part9/patientor/backend
+      - name: Start healthapp server
+        working-directory: ./healthapp
         run: |
           npm start &
           echo $! > server.pid
           sleep 3
 
       - name: Install test dependencies
-        working-directory: ./part9/patientor-api-tests
+        working-directory: ./healthapp-tests
         run: npm install
 
       - name: Install Playwright browsers
-        working-directory: ./part9/patientor-api-tests
+        working-directory: ./healthapp-tests
         run: npx playwright install --with-deps chromium
 
-      - name: Run API tests
-        working-directory: ./part9/patientor-api-tests
+      - name: Run e2e tests
+        working-directory: ./healthapp-tests
         run: npm test
 
       - name: Upload test report
@@ -49,12 +49,12 @@ jobs:
         if: always()
         with:
           name: playwright-report
-          path: /part9/patientor-api-tests/playwright-report/
+          path: healthapp-tests/playwright-report/
           retention-days: 30
 
-      - name: Stop patientor backend server
+      - name: Stop healthapp server
         if: always()
-        working-directory: ./part9/patientor/backend
+        working-directory: ./healthapp
         run: |
           if [ -f server.pid ]; then
             kill $(cat server.pid) || true
