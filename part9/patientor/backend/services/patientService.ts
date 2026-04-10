@@ -1,12 +1,8 @@
 import { v1 as uuid } from "uuid";
-import patientsData from "../data/patients.ts";
-import type {
-  NewPatientEntry,
-  NonSensitivePatients,
-  Patient,
-} from "../types.ts";
+import patientData from "../data/patients.ts";
+import type { NewPatientEntry, NonSensitivePatients, Patient } from "../types.ts";
 
-const patients: Patient[] = patientsData;
+const patients: Patient[] = patientData;
 
 const getPatients = (): Patient[] => {
   return patients;

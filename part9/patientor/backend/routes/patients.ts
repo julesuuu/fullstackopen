@@ -1,17 +1,18 @@
-import express, { type Response } from "express";
-import patientsService from "../services/patientsService.ts";
-import type { NonSensitivePatients } from "../types.ts";
-import parseNewPatientEntry from "../utils.ts";
+import express, { type Request, type Response, type NextFunction } from "express";
+import patientService from "../services/patientService.ts";
+
+import z from "zod";
+import { NewEntrySchema, type NewPatientEntry, type NonSensitivePatients, type Patient } from "../types.ts";
 
 const router = express.Router();
 
 router.get("/", (_req, res: Response<NonSensitivePatients[]>) => {
-  const data = patientsService.getNonSensitivePatients();
+  const data = patientService.getNonSensitivePatients();
   res.send(data);
 });
 
 router.get("/:id", (req, res) => {
-  const patient = patientsService.findById(req.params.id);
+  const patient = patientService.findById(req.params.id);
 
   if (patient) {
     res.send(patient);
@@ -20,18 +21,28 @@ router.get("/:id", (req, res) => {
   }
 });
 
-router.post("/", (req, res) => {
+const newPatientParser = (req: Request, _res: Response, next: NextFunction) => {
   try {
-    const newPatientEntry = parseNewPatientEntry(req.body);
-    const addedPatient = patientsService.addPatient(newPatientEntry);
-    res.json(addedPatient);
+    NewEntrySchema.parse(req.body);
+    next();
   } catch (error: unknown) {
-    let errorMessage = "Something went wrong.";
-    if (error instanceof Error) {
-      errorMessage += " Error: " + error.message;
-    }
-    res.status(400).send(errorMessage);
+    next(error);
   }
+};
+
+router.post("/", newPatientParser, (req: Request<unknown, unknown, NewPatientEntry>, res: Response<Patient>) => {
+  const addedEntry = patientService.addPatient(req.body);
+  res.json(addedEntry);
 });
+
+const errorMiddleware = (error: unknown, _req: Request, res: Response, next: NextFunction) => {
+  if (error instanceof z.ZodError) {
+    res.status(400).send({ error: error.issues });
+  } else {
+    next(error);
+  }
+};
+
+router.use(errorMiddleware);
 
 export default router;
