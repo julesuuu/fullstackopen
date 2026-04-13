@@ -1,7 +1,7 @@
 import { Typography } from "@mui/material";
-import { HospitalEntry } from "../../types";
+import { Diagnosis, HospitalEntry } from "../../types";
 
-const Hospital = ({ entry }: { entry: HospitalEntry }) => {
+const Hospital = ({ entry, diagnoses }: { entry: HospitalEntry; diagnoses: Diagnosis[] }) => {
   return (
     <>
       <Typography>
@@ -9,7 +9,9 @@ const Hospital = ({ entry }: { entry: HospitalEntry }) => {
       </Typography>
       <ul>
         {entry.diagnosisCodes?.map((dc) => (
-          <li key={dc}>{dc}</li>
+          <li key={dc}>
+            {dc} {diagnoses.find((d) => d.code === dc)?.name}
+          </li>
         ))}
       </ul>
     </>

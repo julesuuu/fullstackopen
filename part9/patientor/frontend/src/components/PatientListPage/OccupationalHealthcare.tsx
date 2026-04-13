@@ -1,9 +1,9 @@
 import { Typography } from "@mui/material";
-import { OccupationalHealthcareEntry, OccupationalHealthcareEntryWithoutSickLeave } from "../../types";
+import { Diagnosis, OccupationalHealthcareEntry, OccupationalHealthcareEntryWithoutSickLeave } from "../../types";
 
 type Entry = OccupationalHealthcareEntry | OccupationalHealthcareEntryWithoutSickLeave;
 
-const OccupationalHealthcare = ({ entry }: { entry: Entry }) => {
+const OccupationalHealthcare = ({ entry, diagnoses }: { entry: Entry; diagnoses: Diagnosis[] }) => {
   return (
     <>
       <Typography>
@@ -11,7 +11,9 @@ const OccupationalHealthcare = ({ entry }: { entry: Entry }) => {
       </Typography>
       <ul>
         {entry.diagnosisCodes?.map((dc) => (
-          <li key={dc}>{dc}</li>
+          <li key={dc}>
+            {dc} {diagnoses.find((d) => d.code === dc)?.name}
+          </li>
         ))}
       </ul>
     </>
