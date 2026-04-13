@@ -1,4 +1,4 @@
-import z, { symbol } from "zod";
+import z from "zod";
 
 export type Diagnosis = {
   code: string;

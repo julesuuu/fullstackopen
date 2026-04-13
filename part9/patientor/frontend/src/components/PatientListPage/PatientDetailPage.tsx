@@ -1,10 +1,10 @@
-import { Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import PersonIcon from "@mui/icons-material/Person";
 
 import patientService from "../../services/patients";
 import { Patient } from "../../types";
+import PatientData from "./PatientData";
+import PatientEntries from "./PatientEntries";
 
 const PatientDetailPage = () => {
   const { id } = useParams();
@@ -21,12 +21,8 @@ const PatientDetailPage = () => {
   }
   return (
     <div>
-      <Typography variant="h4">
-        {patient.name} <PersonIcon />
-      </Typography>
-      <Typography>sss: {patient.ssn}</Typography>
-      <Typography>occupation: {patient.occupation}</Typography>
-      <Typography>date of birth: {patient.dateOfBirth}</Typography>
+      <PatientData patient={patient} />
+      <PatientEntries patient={patient} />
     </div>
   );
 };
