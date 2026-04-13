@@ -20,12 +20,16 @@ export const NewEntrySchema = z.object({
   occupation: z.string(),
 });
 
-export type NonSensitivePatients = Omit<Patient, "ssn">;
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface Entry {}
+
+export type NonSensitivePatient = Omit<Patient, "ssn" | "entries">;
 
 export type NewPatientEntry = z.infer<typeof NewEntrySchema>;
 
 export interface Patient extends NewPatientEntry {
   id: string;
+  entries: Entry[];
 }
 
 export type Gender = (typeof Gender)[keyof typeof Gender];

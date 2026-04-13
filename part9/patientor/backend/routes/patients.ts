@@ -2,11 +2,11 @@ import express, { type Request, type Response, type NextFunction } from "express
 import patientService from "../services/patientService.ts";
 
 import z from "zod";
-import { NewEntrySchema, type NewPatientEntry, type NonSensitivePatients, type Patient } from "../types.ts";
+import { NewEntrySchema, type NewPatientEntry, type NonSensitivePatient, type Patient } from "../types.ts";
 
 const router = express.Router();
 
-router.get("/", (_req, res: Response<NonSensitivePatients[]>) => {
+router.get("/", (_req, res: Response<NonSensitivePatient[]>) => {
   const data = patientService.getNonSensitivePatients();
   res.send(data);
 });
