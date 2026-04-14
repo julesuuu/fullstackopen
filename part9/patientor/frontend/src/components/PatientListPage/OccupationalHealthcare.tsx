@@ -1,14 +1,16 @@
 import { Typography } from "@mui/material";
-import { Diagnosis, OccupationalHealthcareEntry, OccupationalHealthcareEntryWithoutSickLeave } from "../../types";
+import { Diagnosis, Entry } from "../../types";
+import { MedicalInformation } from "@mui/icons-material";
 
-type Entry = OccupationalHealthcareEntry | OccupationalHealthcareEntryWithoutSickLeave;
+type OccEntry = Extract<Entry, { type: "OccupationalHealthcare" }>;
 
-const OccupationalHealthcare = ({ entry, diagnoses }: { entry: Entry; diagnoses: Diagnosis[] }) => {
+const OccupationalHealthcare = ({ entry, diagnoses }: { entry: OccEntry; diagnoses: Diagnosis[] }) => {
   return (
-    <>
+    <div style={{ border: "1px solid black", padding: "8px", borderRadius: "6px" }}>
       <Typography>
-        {entry.date} {entry.description}
+        {entry.date} <MedicalInformation />
       </Typography>
+      <Typography>{entry.description}</Typography>
       <ul>
         {entry.diagnosisCodes?.map((dc) => (
           <li key={dc}>
@@ -16,7 +18,14 @@ const OccupationalHealthcare = ({ entry, diagnoses }: { entry: Entry; diagnoses:
           </li>
         ))}
       </ul>
-    </>
+      {"sickLeave" in entry && entry.sickLeave && (
+        <Typography>
+          Sick Leave: {entry.sickLeave.startDate} - {entry.sickLeave.endDate}
+        </Typography>
+      )}
+      <Typography>Employer: {entry.employerName}</Typography>
+      <Typography>Diagnosed by {entry.specialist}</Typography>
+    </div>
   );
 };
 

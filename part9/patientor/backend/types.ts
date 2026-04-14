@@ -62,7 +62,9 @@ interface OccupationalHealthcareEntry extends BaseEntry {
   };
 }
 
-type OccupationalHealthcareEntryWithoutSickLeave = Omit<OccupationalHealthcareEntry, "sickLeave">;
+type UnionOmit<T, K extends string | number | symbol> = T extends unknown ? Omit<T, K> : never;
+
+type Optional<T, K extends keyof T> = UnionOmit<T, K> & Partial<Pick<T, K>>;
 
 interface HospitalEntry extends BaseEntry {
   type: "Hospital";
@@ -72,8 +74,4 @@ interface HospitalEntry extends BaseEntry {
   };
 }
 
-export type Entry =
-  | HospitalEntry
-  | OccupationalHealthcareEntry
-  | OccupationalHealthcareEntryWithoutSickLeave
-  | HealthCheckEntry;
+export type Entry = HospitalEntry | Optional<OccupationalHealthcareEntry, "sickLeave"> | HealthCheckEntry;
