@@ -2,7 +2,14 @@ import express, { type Request, type Response, type NextFunction } from "express
 import patientService from "../services/patientService.ts";
 
 import z from "zod";
-import { NewEntrySchema, type NewPatientEntry, type NonSensitivePatient, type Patient } from "../types.ts";
+import {
+  EntrySchema,
+  NewEntrySchema,
+  type NewEntry,
+  type NewPatientEntry,
+  type NonSensitivePatient,
+  type Patient,
+} from "../types.ts";
 
 const router = express.Router();
 
@@ -42,6 +49,19 @@ const errorMiddleware = (error: unknown, _req: Request, res: Response, next: Nex
     next(error);
   }
 };
+
+router.post(
+  "/:id/entries",
+  (req: Request<{ id: string }, unknown, NewEntry>, res: Response<Patient>, next: NextFunction) => {
+    try {
+      EntrySchema.parse(req.body);
+      const updatedPatient = patientService.addEntry(req.params.id, req.body);
+      res.json(updatedPatient);
+    } catch (error: unknown) {
+      next(error);
+    }
+  },
+);
 
 router.use(errorMiddleware);
 
