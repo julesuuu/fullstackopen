@@ -18,7 +18,7 @@ const AddEntryForm = ({ onCancel, onSubmit, diagnoses }: Props) => {
 
   const [entryType, setEntryType] = useState<EntryType>("HealthCheck");
   // HealthCheck
-  const [healthCheckRating, setHealthCheckRating] = useState("");
+  const [healthCheckRating, setHealthCheckRating] = useState("0");
   // OccupationalHealthcare
   const [employerName, setEmployerName] = useState("");
   const [sickLeaveStart, setSickLeaveStart] = useState("");
@@ -87,6 +87,7 @@ const AddEntryForm = ({ onCancel, onSubmit, diagnoses }: Props) => {
         </Select>
         <InputLabel>Date</InputLabel>
         <TextField
+          label="Date"
           fullWidth
           required
           type="date"
