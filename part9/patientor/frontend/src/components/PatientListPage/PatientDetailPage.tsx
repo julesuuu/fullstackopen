@@ -48,7 +48,7 @@ const PatientDetailPage = () => {
       <PatientEntries patient={patient} diagnoses={diagnoses} />
 
       {showForm ? (
-        <AddEntryForm onCancel={() => setShowForm(false)} onSubmit={handleAddEntry} />
+        <AddEntryForm onCancel={() => setShowForm(false)} onSubmit={handleAddEntry} diagnoses={diagnoses} />
       ) : (
         <Button variant="contained" onClick={() => setShowForm(true)} sx={{ mt: 2 }}>
           Add Entry

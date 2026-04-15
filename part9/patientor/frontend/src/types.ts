@@ -68,3 +68,8 @@ export interface HospitalEntry extends BaseEntry {
 export type Entry = HospitalEntry | Optional<OccupationalHealthcareEntry, "sickLeave"> | HealthCheckEntry;
 
 export type NewEntry = UnionOmit<Entry, "id">;
+
+export interface Diagnoses {
+  code: string;
+  name: string;
+}
