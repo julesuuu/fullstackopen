@@ -37,7 +37,7 @@ const HealthCheckRating = {
   CriticalRisk: 3,
 } as const;
 
-type HealthCheckRating = (typeof HealthCheckRating)[keyof typeof HealthCheckRating];
+export type HealthCheckRating = (typeof HealthCheckRating)[keyof typeof HealthCheckRating];
 
 export interface HealthCheckEntry extends BaseEntry {
   type: "HealthCheck";
@@ -66,3 +66,5 @@ export interface HospitalEntry extends BaseEntry {
 }
 
 export type Entry = HospitalEntry | Optional<OccupationalHealthcareEntry, "sickLeave"> | HealthCheckEntry;
+
+export type NewEntry = UnionOmit<Entry, "id">;
